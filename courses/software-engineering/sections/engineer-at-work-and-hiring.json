@@ -1,0 +1,565 @@
+{
+  "id": "engineer-at-work-and-hiring",
+  "title": "Working on a team and getting hired",
+  "summary": "How real teams plan, review and ship work, how to use AI tools without losing your skills, and how to build a portfolio, pass coding and behavioral interviews, and land the first job.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "how-software-teams-work",
+      "title": "How software teams work",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "2DOEATfXT8k",
+          "title": "Lecture 8: Beyond the Code (Missing Semester, 2026)"
+        }
+      ],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/how-software-teams-work.md"
+      },
+      "resources": [
+        {
+          "title": "Atlassian: User stories with examples and a template",
+          "url": "https://www.atlassian.com/agile/project-management/user-stories"
+        },
+        {
+          "title": "Atlassian: What is Scrum?",
+          "url": "https://www.atlassian.com/agile/scrum"
+        },
+        {
+          "title": "Joel Spolsky: The Joel Test, 12 steps to better code",
+          "url": "https://www.joelonsoftware.com/2000/08/09/the-joel-test-12-steps-to-better-code/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-parse-user-story",
+          "type": "code",
+          "title": "Parse a user story",
+          "prompt": {
+            "file": "practice/job-parse-user-story/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-parse-user-story/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-parse-user-story/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-parse-user-story/solution.py"
+          }
+        },
+        {
+          "id": "job-quiz-ready-ticket",
+          "type": "quiz",
+          "question": "Which ticket is **ready** for an engineer to pick up?",
+          "options": [
+            "\"Improve the search page.\"",
+            "\"As a shopper, I want search results sorted by price so that I find cheap items fast. Given results exist, when I pick 'Price: low to high', then the cheapest item is first.\"",
+            "\"Search is slow, someone should look at it.\"",
+            "\"As a user, I want a better experience.\""
+          ],
+          "answer": 1,
+          "explanation": "A ready ticket says **who** wants it, **what** they want, **why**, and has **acceptance criteria** you can test. Only option 2 has all four. \"Improve the search page\" and \"a better experience\" have no way to tell when you're done, and \"someone should look at it\" is a bug hunch with no owner or criteria. Ask questions on vague tickets *before* you start coding."
+        },
+        {
+          "id": "job-quiz-standup",
+          "type": "quiz",
+          "question": "What is a daily standup **for**?",
+          "options": [
+            "Reporting your hours to your manager",
+            "Solving each technical problem in detail with the whole team",
+            "A quick sync: what you did, what's next, and what's blocking you, so blockers get unstuck fast",
+            "Demoing finished features to customers"
+          ],
+          "answer": 2,
+          "explanation": "A standup is about 15 minutes of coordination. Its most valuable part is **blockers**: saying \"I'm stuck on X\" so someone can help today. Detailed problem-solving happens *after* the standup with only the people who need to be there."
+        }
+      ]
+    },
+    {
+      "id": "code-review",
+      "title": "Code review",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/code-review.md"
+      },
+      "resources": [
+        {
+          "title": "Google Engineering Practices: Code review",
+          "url": "https://google.github.io/eng-practices/review/"
+        },
+        {
+          "title": "Google: How to do a code review",
+          "url": "https://google.github.io/eng-practices/review/reviewer/"
+        },
+        {
+          "title": "Google: The CL author's guide",
+          "url": "https://google.github.io/eng-practices/review/developer/"
+        },
+        {
+          "title": "Google: Small CLs",
+          "url": "https://google.github.io/eng-practices/review/developer/small-cls.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-classify-comment",
+          "type": "code",
+          "title": "Classify a review comment",
+          "prompt": {
+            "file": "practice/job-classify-comment/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-classify-comment/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-classify-comment/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-classify-comment/solution.py"
+          }
+        },
+        {
+          "id": "job-quiz-review-diff",
+          "type": "quiz",
+          "question": "You're reviewing this pull request. It adds a search endpoint helper.\n\n```python\n+ def find(db, q):\n+     sql = f\"SELECT id, title FROM books WHERE title LIKE '%{q}%'\"\n+     try:\n+         rows = db.execute(sql).fetchall()\n+     except Exception:\n+         rows = []\n+     return rows[:25]\n```\n\nThe PR adds no tests. Which issue should block the merge **first**?",
+          "options": [
+            "The magic number `25`",
+            "The f-string builds SQL from user input: SQL injection",
+            "The names `find` and `q` are vague",
+            "The `except Exception` hides database errors"
+          ],
+          "answer": 1,
+          "explanation": "All four are real issues, plus the missing tests, but **security comes first**: `q` comes from the user, so `' OR 1=1 --` can change the query. A good blocking comment: *\"This builds SQL from user input, so it's open to injection. Use a parameter: `db.execute(\"... LIKE ?\", (f\"%{q}%\",))`.\"* Then, in order: the swallowed exception (*\"If the database is down we'd return 'no results' and nobody would know. Can we let it raise, or log it?\"*), a request for tests, and `nit:` comments for the names and the `25` (*\"nit: a `MAX_RESULTS = 25` constant would explain this number\"*)."
+        },
+        {
+          "id": "job-quiz-kind-comment",
+          "type": "quiz",
+          "question": "Which review comment is both **specific** and **kind**?",
+          "options": [
+            "\"This is wrong.\"",
+            "\"Why would you ever loop like this??\"",
+            "\"This loops over all orders for each user, so it's O(n·m). A dict from user_id to orders would make it O(n + m). Want me to pair on it?\"",
+            "\"I'd have done this differently but whatever, approve.\""
+          ],
+          "answer": 2,
+          "explanation": "Good comments are about the **code**, not the person, say **what** is wrong and **why**, and suggest a fix. Option 3 does all three and offers help. \"This is wrong\" gives the author nothing to act on, \"why would you ever…\" attacks the author, and approving with a grumble wastes the chance to explain."
+        }
+      ]
+    },
+    {
+      "id": "using-ai-tools-responsibly",
+      "title": "Using AI tools responsibly",
+      "duration": "90 min",
+      "videos": [
+        {
+          "youtube": "sTdz6PZoAnw",
+          "title": "Lecture 7: Agentic Coding (Missing Semester, 2026)"
+        }
+      ],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/using-ai-tools-responsibly.md"
+      },
+      "resources": [
+        {
+          "title": "Missing Semester 2026: Agentic Coding",
+          "url": "https://missing.csail.mit.edu/2026/agentic-coding/"
+        },
+        {
+          "title": "Anthropic: How AI assistance impacts the formation of coding skills",
+          "url": "https://www.anthropic.com/research/AI-assistance-coding-skills"
+        },
+        {
+          "title": "Stack Overflow Developer Survey 2025",
+          "url": "https://survey.stackoverflow.co/2025/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-review-ai-csv-dates",
+          "type": "code",
+          "title": "Review the AI's code: parse_csv_dates",
+          "prompt": {
+            "file": "practice/job-review-ai-csv-dates/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-review-ai-csv-dates/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-review-ai-csv-dates/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-review-ai-csv-dates/solution.py"
+          }
+        },
+        {
+          "id": "job-check-imports",
+          "type": "code",
+          "title": "Guard against hallucinated packages",
+          "prompt": {
+            "file": "practice/job-check-imports/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-check-imports/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-check-imports/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-check-imports/solution.py"
+          }
+        },
+        {
+          "id": "job-quiz-ai-at-work",
+          "type": "quiz",
+          "question": "Which of these uses of an AI assistant at work is **acceptable**?",
+          "options": [
+            "Pasting a customer's support ticket, with their email and address, into a personal chatbot account to draft a reply",
+            "Asking the company-approved assistant to explain an unfamiliar regex in the codebase, then checking it with a few test strings",
+            "Pasting the production database password into a chat to ask why the connection fails",
+            "Merging a 400-line AI-generated change you haven't read because the tests pass"
+          ],
+          "answer": 1,
+          "explanation": "Using an **approved** tool to **explain** code, then **verifying** the answer yourself, is exactly the good pattern. Customer data and secrets must never go into tools your employer hasn't approved (and secrets into no chat at all). And you own every line you merge: passing tests only prove what the tests check, so read it all."
+        },
+        {
+          "id": "job-quiz-unknown-package",
+          "type": "quiz",
+          "question": "An assistant suggests `pip install fastapi-auth-helpers`. You've never heard of it. What do you do first?",
+          "options": [
+            "Install it; the assistant knows the ecosystem",
+            "Look it up on pypi.org: check it exists, who publishes it, how old it is and how many people use it, and whether the docs mention it",
+            "Install it in a virtual environment so it can't do harm",
+            "Ask the assistant whether the package is safe"
+          ],
+          "answer": 1,
+          "explanation": "Assistants sometimes invent package names, and attackers register those names with malware (\"slopsquatting\"). A virtual environment does **not** protect you: installing runs the package's code with your permissions. Asking the same assistant just gets another guess. Verify on PyPI and in the official docs before installing."
+        }
+      ]
+    },
+    {
+      "id": "reading-code-and-open-source",
+      "title": "Reading code and open source",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/reading-code-and-open-source.md"
+      },
+      "resources": [
+        {
+          "title": "Choose an open source license",
+          "url": "https://choosealicense.com/"
+        },
+        {
+          "title": "Make a README",
+          "url": "https://www.makeareadme.com/"
+        },
+        {
+          "title": "Python docs: ast, Abstract Syntax Trees",
+          "url": "https://docs.python.org/3/library/ast.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-call-graph",
+          "type": "code",
+          "title": "Map who calls whom",
+          "prompt": {
+            "file": "practice/job-call-graph/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-call-graph/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-call-graph/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-call-graph/solution.py"
+          }
+        },
+        {
+          "id": "job-quiz-where-to-start",
+          "type": "quiz",
+          "question": "You've just cloned an unfamiliar repo to fix a bug. What's the best first move?",
+          "options": [
+            "Read every file from top to bottom, alphabetically",
+            "Read the README, get it running, and run the tests so you know what \"working\" looks like",
+            "Start rewriting the parts that look messy",
+            "Open the biggest file, since that's where the logic is"
+          ],
+          "answer": 1,
+          "explanation": "The README tells you how to install and run it. Running the tests proves your setup works and gives you a safety net *before* you change anything. Then find the entry point and follow one request end to end. Reading everything is too slow, and rewriting code you don't understand yet is how bugs are born."
+        },
+        {
+          "id": "job-quiz-contributing",
+          "type": "quiz",
+          "question": "What does a project's `CONTRIBUTING.md` file usually tell you?",
+          "options": [
+            "The software license",
+            "How the maintainers want contributions: setup, code style, how to run tests, and how to open issues and PRs",
+            "A list of everyone who has contributed",
+            "The project's release history"
+          ],
+          "answer": 1,
+          "explanation": "`CONTRIBUTING.md` is the maintainers' instructions for you. Read it **before** opening a PR: many projects want an issue first, a specific branch name, a changelog entry or signed commits. The license is in `LICENSE`, and the history is in `CHANGELOG.md` or the releases page."
+        }
+      ]
+    },
+    {
+      "id": "portfolio-github-and-resume",
+      "title": "Portfolio, GitHub and resume",
+      "duration": "90 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/portfolio-github-and-resume.md"
+      },
+      "resources": [
+        {
+          "title": "Tech Interview Handbook: Resume",
+          "url": "https://www.techinterviewhandbook.org/resume/"
+        },
+        {
+          "title": "Jake's resume template (GitHub)",
+          "url": "https://github.com/jakegut/resume"
+        },
+        {
+          "title": "Make a README",
+          "url": "https://www.makeareadme.com/"
+        },
+        {
+          "title": "Felix Rieseberg: Hunger beats tenure, advice for junior engineers",
+          "url": "https://felixrieseberg.com/hunger-beats-tenure-advice-for-junior-engineers/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-score-resume-bullet",
+          "type": "code",
+          "title": "Score a resume bullet",
+          "prompt": {
+            "file": "practice/job-score-resume-bullet/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-score-resume-bullet/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-score-resume-bullet/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-score-resume-bullet/solution.py"
+          }
+        },
+        {
+          "id": "job-quiz-stronger-bullet",
+          "type": "quiz",
+          "question": "Which resume bullet is strongest?",
+          "options": [
+            "\"Responsible for the backend of a habit-tracker app.\"",
+            "\"Worked with Python, FastAPI, SQLite, pytest, GitHub Actions and Docker.\"",
+            "\"Built a habit-tracker API (FastAPI, SQLite) used daily by 12 club members; 94% test coverage, deployed with CI.\"",
+            "\"Passionate developer who loves clean code and learning new technologies.\""
+          ],
+          "answer": 2,
+          "explanation": "A strong bullet = **action verb + what you built + evidence** (users, numbers, quality). Option 3 has all of them and still names the stack. A list of tools proves nothing about what you can do with them, \"responsible for\" describes a duty, not a result, and \"passionate\" is a claim every applicant makes."
+        },
+        {
+          "id": "job-quiz-stronger-readme",
+          "type": "quiz",
+          "question": "A hiring manager gives each portfolio repo about 60 seconds. Which README opening serves them best?",
+          "options": [
+            "A long story of why you started learning to code",
+            "One sentence on what it does and for whom, a live demo link or GIF, then how to run it and how to run the tests",
+            "Only the commands to install dependencies",
+            "A list of every library used, with version numbers"
+          ],
+          "answer": 1,
+          "explanation": "Lead with **what and for whom**, then **proof it works** (demo link, screenshot or GIF), then **how to run it and its tests**. Design decisions and next steps come further down for readers who want depth. Your personal story belongs in a cover letter or an interview."
+        }
+      ]
+    },
+    {
+      "id": "coding-interviews",
+      "title": "Coding interviews",
+      "duration": "120 min",
+      "videos": [
+        {
+          "youtube": "XKu_SEDAykw",
+          "title": "How to: Work at Google — Example Coding/Engineering Interview (Life at Google)"
+        },
+        {
+          "youtube": "T0u5nwSA0w0",
+          "title": "Neetcode 150 Course - All Coding Interview Questions Solved (freeCodeCamp.org)"
+        },
+        {
+          "youtube": "jIj0rfU_hYc",
+          "title": "NeetCode - How I Would Master LeetCode (If I Could Start Over) (Aman Manazir, supplementary)"
+        }
+      ],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/coding-interviews.md"
+      },
+      "resources": [
+        {
+          "title": "Tech Interview Handbook: Coding interview prep",
+          "url": "https://www.techinterviewhandbook.org/coding-interview-prep/"
+        },
+        {
+          "title": "Tech Interview Handbook: Coding interview techniques",
+          "url": "https://www.techinterviewhandbook.org/coding-interview-techniques/"
+        },
+        {
+          "title": "Tech Interview Handbook: Grind 75",
+          "url": "https://www.techinterviewhandbook.org/grind75/"
+        },
+        {
+          "title": "NeetCode practice",
+          "url": "https://neetcode.io/practice"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-min-meeting-rooms",
+          "type": "code",
+          "title": "Interview problem: meeting rooms",
+          "prompt": {
+            "file": "practice/job-min-meeting-rooms/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-min-meeting-rooms/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-min-meeting-rooms/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-min-meeting-rooms/solution.py"
+          }
+        },
+        {
+          "id": "job-longest-consecutive",
+          "type": "code",
+          "title": "Interview problem: longest consecutive sequence",
+          "prompt": {
+            "file": "practice/job-longest-consecutive/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-longest-consecutive/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-longest-consecutive/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-longest-consecutive/solution.py"
+          }
+        },
+        {
+          "id": "job-word-ladder",
+          "type": "code",
+          "title": "Interview problem: word ladder",
+          "prompt": {
+            "file": "practice/job-word-ladder/prompt.md"
+          },
+          "starter": {
+            "file": "practice/job-word-ladder/starter.py"
+          },
+          "tests": {
+            "file": "practice/job-word-ladder/tests.py"
+          },
+          "solution": {
+            "file": "practice/job-word-ladder/solution.py"
+          }
+        },
+        {
+          "id": "job-quiz-pattern-match",
+          "type": "quiz",
+          "question": "*\"Given a list of daily prices, find the length of the longest stretch of days with no repeated price.\"* Which pattern fits best?",
+          "options": [
+            "Binary search",
+            "Sliding window with a set",
+            "Breadth-first search",
+            "A heap"
+          ],
+          "answer": 1,
+          "explanation": "\"Longest **contiguous** stretch that satisfies a condition\" is the signature of a **sliding window**: grow the right edge, and shrink the left edge while the window breaks the rule (here, a repeat, which a set detects in O(1)). BFS is for shortest paths, heaps for \"k largest/smallest\" or \"next earliest\", and binary search for sorted data or a monotonic answer."
+        },
+        {
+          "id": "job-quiz-stuck",
+          "type": "quiz",
+          "question": "Ten minutes in, you're stuck on the optimal solution. What should you say?",
+          "options": [
+            "Nothing; keep thinking silently until you have it",
+            "\"I don't know this one.\"",
+            "\"I can do it in O(n²) by checking every pair. Let me write that first, then look for the repeated work to remove.\"",
+            "Ask the interviewer for the answer"
+          ],
+          "answer": 2,
+          "explanation": "Interviewers grade your **process**, not just the final answer. A working brute force, stated clearly, is real progress, and naming the wasted work (\"I recompute this sum each time\") is often the path to the optimisation. Silence gives the interviewer nothing to grade, and giving up ends the conversation."
+        }
+      ]
+    },
+    {
+      "id": "behavioral-interviews-and-the-job-search",
+      "title": "Behavioral interviews and the job search",
+      "duration": "90 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/engineer-at-work-and-hiring/behavioral-interviews-and-the-job-search.md"
+      },
+      "resources": [
+        {
+          "title": "Tech Interview Handbook: Behavioral interviews",
+          "url": "https://www.techinterviewhandbook.org/behavioral-interview/"
+        },
+        {
+          "title": "Tech Interview Handbook",
+          "url": "https://www.techinterviewhandbook.org/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "job-quiz-weak-star",
+          "type": "quiz",
+          "question": "Which STAR answer to *\"Tell me about a hard bug\"* is **weakest**?",
+          "options": [
+            "\"Our API returned wrong totals for some users. I reproduced it with a failing test, bisected to a timezone conversion, fixed it, and added a regression test. Wrong-total reports dropped to zero.\"",
+            "\"We had a lot of bugs in our project and we all worked really hard as a team to fix them, and in the end it was fine.\"",
+            "\"My file organiser deleted files on name clashes. I wrote a test that reproduced it, added a suffix rule and a dry-run flag, and haven't lost a file since.\"",
+            "\"A teammate's PR broke CI on Windows. I paired with them, found a path-separator bug, switched to pathlib, and we added a Windows CI job.\""
+          ],
+          "answer": 1,
+          "explanation": "STAR = **Situation, Task, Action, Result**. Option 2 has no specific situation, uses \"we\" so the interviewer can't tell what **you** did, and the result is \"it was fine\". The others name a concrete problem, your actions in order, and a measurable result."
+        },
+        {
+          "id": "job-quiz-outreach",
+          "type": "quiz",
+          "question": "Which cold message to an engineer at a company you like is most likely to get a reply?",
+          "options": [
+            "\"Hi, can you refer me? Here's my resume.\"",
+            "\"Hi! I'm looking for a job, any openings?\"",
+            "\"Hi Sam, I read your post on moving your team's jobs to a queue. I built something similar in my expense-tracker API (link). Could I ask you two questions about how the team onboards juniors? 15 minutes whenever suits.\"",
+            "A 600-word message with your full life story and every project you've built"
+          ],
+          "answer": 2,
+          "explanation": "Replies come from messages that are **short, specific, personal** and make a **small ask**. Option 3 shows you know their work, links one relevant project, and asks for 15 minutes, not a job. Asking a stranger for a referral up front is a big ask with no context, and long messages don't get read."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "job-project",
+    "title": "Job-ready packet",
+    "brief": {
+      "file": "projects/engineer-at-work-and-hiring.md"
+    },
+    "checklist": [
+      "One-page resume (Jake's template or similar) with quantified project bullets that pass your bullet scorer",
+      "GitHub profile README pinning your 3 best repos, each with a demo link or GIF, setup steps and tests",
+      "6 STAR stories written out: conflict, failure, learning fast, ownership, teamwork, a hard bug",
+      "2 mock coding interviews done (peer or recorded), each with a written self-review",
+      "One open-source contribution (docs or code) opened as a PR",
+      "An application tracker with 20 targeted applications and 10 personal outreach messages"
+    ],
+    "links": true
+  }
+}

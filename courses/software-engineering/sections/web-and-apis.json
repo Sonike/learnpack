@@ -1,0 +1,550 @@
+{
+  "id": "web-and-apis",
+  "title": "The internet, HTTP and building a backend",
+  "summary": "How the internet and HTTP really work, calling APIs reliably, building a backend by hand and then with FastAPI, and the security basics every API needs. Project: a FastAPI service with auth.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "how-the-internet-works",
+      "title": "How the internet works",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "AYdF7b3nMto",
+          "title": "The Internet: Packets, Routing & Reliability"
+        },
+        {
+          "youtube": "5o8CwafCxnU",
+          "title": "The Internet: IP Addresses & DNS"
+        },
+        {
+          "youtube": "kBXQZMmiA4s",
+          "title": "The Internet: HTTP & HTML"
+        }
+      ],
+      "body": {
+        "file": "lessons/web-and-apis/how-the-internet-works.md"
+      },
+      "resources": [
+        {
+          "title": "MDN: How does the Internet work?",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/How_does_the_Internet_work"
+        },
+        {
+          "title": "MDN: What is a URL?",
+          "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Web_mechanics/What_is_a_URL"
+        }
+      ],
+      "practice": [
+        {
+          "id": "web-parse-url",
+          "type": "code",
+          "title": "Take a URL apart by hand",
+          "prompt": {
+            "file": "practice/web-parse-url/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-parse-url/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-parse-url/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-parse-url/solution.py"
+          }
+        },
+        {
+          "id": "web-quiz-page-load-order",
+          "type": "quiz",
+          "question": "You type `https://example.com/about` and press Enter. In what order do these happen?",
+          "options": [
+            "HTTP request → DNS lookup → TCP connection → TLS handshake",
+            "DNS lookup → TCP connection → TLS handshake → HTTP request",
+            "TLS handshake → DNS lookup → HTTP request → TCP connection",
+            "TCP connection → DNS lookup → HTTP request → TLS handshake"
+          ],
+          "answer": 1,
+          "explanation": "You need the IP address before you can connect (**DNS**), a connection before you can encrypt it (**TCP**), and encryption before anything private is sent (**TLS**). Only then does the browser send the **HTTP request**. Knowing the order tells you where to look: \"server not found\" is DNS, \"connection refused\" is TCP, a certificate warning is TLS."
+        },
+        {
+          "id": "web-quiz-dns",
+          "type": "quiz",
+          "question": "What does a DNS lookup for `github.com` give you back?",
+          "options": [
+            "The GitHub home page's HTML",
+            "An IP address for the server, such as `140.82.121.4`",
+            "The port the server listens on",
+            "A TLS certificate proving the server is GitHub"
+          ],
+          "answer": 1,
+          "explanation": "DNS is the internet's phone book: **name in, IP address out**. The port comes from the URL's scheme (443 for `https`), the certificate comes during the TLS handshake, and the HTML comes in the HTTP response, all after DNS."
+        }
+      ]
+    },
+    {
+      "id": "http-in-depth",
+      "title": "HTTP in depth",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "iYM2zFP3Zn0",
+          "title": "HTTP Crash Course & Exploration (Traversy Media)"
+        }
+      ],
+      "body": {
+        "file": "lessons/web-and-apis/http-in-depth.md"
+      },
+      "resources": [
+        {
+          "title": "MDN: An overview of HTTP",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+        },
+        {
+          "title": "MDN: HTTP request methods",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods"
+        },
+        {
+          "title": "MDN: HTTP response status codes",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status"
+        },
+        {
+          "title": "MDN: Using HTTP cookies and sessions",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Session"
+        }
+      ],
+      "practice": [
+        {
+          "id": "web-parse-request",
+          "type": "code",
+          "title": "Parse a raw HTTP request",
+          "prompt": {
+            "file": "practice/web-parse-request/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-parse-request/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-parse-request/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-parse-request/solution.py"
+          }
+        },
+        {
+          "id": "web-build-response",
+          "type": "code",
+          "title": "Build a raw HTTP response",
+          "prompt": {
+            "file": "practice/web-build-response/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-build-response/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-build-response/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-build-response/solution.py"
+          }
+        },
+        {
+          "id": "web-quiz-status-codes",
+          "type": "quiz",
+          "question": "A logged-in user tries to sign up again with an email that's already registered. Which status code fits best?",
+          "options": [
+            "400 Bad Request",
+            "403 Forbidden",
+            "409 Conflict",
+            "500 Internal Server Error"
+          ],
+          "answer": 2,
+          "explanation": "**409 Conflict** means the request clashes with the current state of the server, like a duplicate email. 400 is for malformed requests (bad JSON, missing fields), 403 for \"you're not allowed\", and 500 only for bugs on the server. Quick map: 2xx worked, 4xx the client should fix something, 5xx the server failed."
+        },
+        {
+          "id": "web-quiz-idempotent",
+          "type": "quiz",
+          "question": "A request times out and you don't know whether the server received it. Which one is **not** safe to simply send again?",
+          "options": [
+            "`GET /orders/17`",
+            "`PUT /orders/17` with the full order",
+            "`DELETE /orders/17`",
+            "`POST /orders` with a new order"
+          ],
+          "answer": 3,
+          "explanation": "`GET`, `PUT` and `DELETE` are **idempotent**: sending them twice has the same effect as once. `POST` isn't: if the first one did arrive, retrying creates a **second order**. That's why payment APIs accept an idempotency key for `POST`s."
+        }
+      ]
+    },
+    {
+      "id": "consuming-apis",
+      "title": "Consuming APIs",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "-MTSQjw5DrM",
+          "title": "RESTful APIs in 100 Seconds (Fireship; the demo uses Node)"
+        }
+      ],
+      "body": {
+        "file": "lessons/web-and-apis/consuming-apis.md"
+      },
+      "resources": [
+        {
+          "title": "MDN: An overview of HTTP",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+        },
+        {
+          "title": "The Twelve-Factor App",
+          "url": "https://12factor.net/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "web-fetch-all",
+          "type": "code",
+          "title": "Follow cursors to fetch every page",
+          "prompt": {
+            "file": "practice/web-fetch-all/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-fetch-all/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-fetch-all/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-fetch-all/solution.py"
+          }
+        },
+        {
+          "id": "web-call-with-retry",
+          "type": "code",
+          "title": "Retry with exponential backoff",
+          "prompt": {
+            "file": "practice/web-call-with-retry/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-call-with-retry/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-call-with-retry/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-call-with-retry/solution.py"
+          }
+        },
+        {
+          "id": "web-quiz-which-to-retry",
+          "type": "quiz",
+          "question": "Your client gets these responses. Which one should it retry automatically, after waiting?",
+          "options": [
+            "401 Unauthorized",
+            "404 Not Found",
+            "429 Too Many Requests",
+            "422 Unprocessable Content"
+          ],
+          "answer": 2,
+          "explanation": "**429** is temporary: you're going too fast, so wait (honour `Retry-After` if present, otherwise back off exponentially) and try again. 401 means your key is wrong or missing, 404 means the thing doesn't exist, and 422 means your data is invalid. Retrying those gives the same answer every time; fix the request instead."
+        },
+        {
+          "id": "web-quiz-api-key",
+          "type": "quiz",
+          "question": "Where should your app's API key for a weather service live?",
+          "options": [
+            "In a constant at the top of `main.py`",
+            "In an environment variable, read with `os.environ` (and a git-ignored `.env` file for local development)",
+            "In the README so teammates can find it",
+            "In a comment, so it isn't executed"
+          ],
+          "answer": 1,
+          "explanation": "Anything in your code or repo will eventually be seen: pushed to GitHub, shared, or scanned by bots that find keys within minutes. Keep keys in **environment variables** and out of git. If one ever leaks, revoke it and make a new one; deleting the commit isn't enough."
+        }
+      ]
+    },
+    {
+      "id": "a-backend-from-scratch",
+      "title": "A backend from scratch",
+      "duration": "90 min",
+      "videos": [
+        {
+          "youtube": "am7POvSZ4GE",
+          "title": "CS50x - Lecture 9 - Flask"
+        }
+      ],
+      "body": {
+        "file": "lessons/web-and-apis/a-backend-from-scratch.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: wsgiref, the WSGI reference implementation",
+          "url": "https://docs.python.org/3/library/wsgiref.html"
+        },
+        {
+          "title": "Python docs: http.server (for local experiments only)",
+          "url": "https://docs.python.org/3/library/http.server.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "web-router",
+          "type": "code",
+          "title": "Build a router",
+          "prompt": {
+            "file": "practice/web-router/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-router/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-router/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-router/solution.py"
+          }
+        },
+        {
+          "id": "web-wsgi-tasks",
+          "type": "code",
+          "title": "A tasks API in plain WSGI",
+          "prompt": {
+            "file": "practice/web-wsgi-tasks/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-wsgi-tasks/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-wsgi-tasks/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-wsgi-tasks/solution.py"
+          }
+        },
+        {
+          "id": "web-quiz-route",
+          "type": "quiz",
+          "question": "In a web backend, what is a **route**?",
+          "options": [
+            "The path packets take across the internet",
+            "A rule mapping an HTTP method and a path pattern (like `GET /tasks/{id}`) to the handler function that answers it",
+            "The database table a request reads from",
+            "The list of servers a request passes through"
+          ],
+          "answer": 1,
+          "explanation": "A route connects a request to your code: **method + path pattern → handler**. The router checks each incoming request against its routes, captures path parameters like `{id}`, and answers 404 (no such path) or 405 (path exists, wrong method) when nothing fits."
+        },
+        {
+          "id": "web-quiz-no-sql-in-handlers",
+          "type": "quiz",
+          "question": "Why keep SQL out of HTTP handlers and in a repository?",
+          "options": [
+            "SQL runs faster inside a repository class",
+            "Handlers can't import `sqlite3`",
+            "Each layer has one job, so handlers can be tested with a fake repository and the database can change without touching HTTP code",
+            "Frameworks reject handlers that contain SQL"
+          ],
+          "answer": 2,
+          "explanation": "Layering (**handler → service → repository**) is about change and testing. Handlers deal with HTTP, the repository with SQL. You can test either without the other, swap SQLite for PostgreSQL in one place, and review all your queries (for injection, say) in one file."
+        }
+      ]
+    },
+    {
+      "id": "building-an-api-with-fastapi",
+      "title": "Building an API with FastAPI",
+      "duration": "90 min",
+      "videos": [
+        {
+          "youtube": "tLKKmouUams",
+          "title": "FastAPI Course for Beginners (freeCodeCamp)"
+        },
+        {
+          "youtube": "0sOvCWFmrtA",
+          "title": "Python API Development - Comprehensive Course for Beginners (freeCodeCamp; long, includes Postgres and auth)"
+        }
+      ],
+      "body": {
+        "file": "lessons/web-and-apis/building-an-api-with-fastapi.md"
+      },
+      "resources": [
+        {
+          "title": "FastAPI tutorial: user guide",
+          "url": "https://fastapi.tiangolo.com/tutorial/"
+        },
+        {
+          "title": "Flask quickstart (an alternative framework)",
+          "url": "https://flask.palletsprojects.com/en/stable/quickstart/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "web-fastapi-notes",
+          "type": "code",
+          "title": "A notes API with FastAPI",
+          "prompt": {
+            "file": "practice/web-fastapi-notes/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-fastapi-notes/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-fastapi-notes/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-fastapi-notes/solution.py"
+          },
+          "language": "python"
+        },
+        {
+          "id": "web-fastapi-override",
+          "type": "code",
+          "title": "Inject the repository with Depends",
+          "prompt": {
+            "file": "practice/web-fastapi-override/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-fastapi-override/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-fastapi-override/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-fastapi-override/solution.py"
+          },
+          "language": "python"
+        },
+        {
+          "id": "web-quiz-fastapi-422",
+          "type": "quiz",
+          "question": "Your FastAPI endpoint takes `note: NoteIn`, where `title` must be 1–100 characters. A client sends `{\"title\": \"\"}`. What happens?",
+          "options": [
+            "Your handler runs with an empty title and you must check it yourself",
+            "FastAPI responds **422** with details of what's wrong, and your handler never runs",
+            "FastAPI responds 500 because validation raised an exception",
+            "FastAPI responds 400 with an empty body"
+          ],
+          "answer": 1,
+          "explanation": "Pydantic validates the body **before** your function is called. If it fails, FastAPI answers **422 Unprocessable Content** with a `detail` list saying where (`loc`: `[\"body\", \"title\"]`) and what (`msg`). It's not a crash, so it's not a 500."
+        },
+        {
+          "id": "web-quiz-where-validation",
+          "type": "quiz",
+          "question": "In a FastAPI app, where is the best place to make sure `quantity` is a positive whole number?",
+          "options": [
+            "In the Pydantic model for the request body, e.g. `quantity: int = Field(gt=0)`",
+            "In the database only, with a CHECK constraint",
+            "In the frontend, so bad values never get sent",
+            "Nowhere: trust the client"
+          ],
+          "answer": 0,
+          "explanation": "Validate **at the boundary**, where data enters your system: the request model. Then every handler receives clean data and clients get a clear 422. A database CHECK is a good second line of defence, and frontend checks help users, but anyone can call your API directly, so the frontend can't be trusted."
+        }
+      ]
+    },
+    {
+      "id": "auth-and-security-basics",
+      "title": "Auth and security basics",
+      "duration": "90 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/web-and-apis/auth-and-security-basics.md"
+      },
+      "resources": [
+        {
+          "title": "OWASP: Password Storage Cheat Sheet",
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"
+        },
+        {
+          "title": "OWASP Top Ten",
+          "url": "https://owasp.org/www-project-top-ten/"
+        },
+        {
+          "title": "Python docs: secrets",
+          "url": "https://docs.python.org/3/library/secrets.html"
+        },
+        {
+          "title": "Python docs: hashlib",
+          "url": "https://docs.python.org/3/library/hashlib.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "web-signed-tokens",
+          "type": "code",
+          "title": "Signed login tokens with HMAC",
+          "prompt": {
+            "file": "practice/web-signed-tokens/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-signed-tokens/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-signed-tokens/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-signed-tokens/solution.py"
+          }
+        },
+        {
+          "id": "web-can-edit",
+          "type": "code",
+          "title": "Who may edit this note?",
+          "prompt": {
+            "file": "practice/web-can-edit/prompt.md"
+          },
+          "starter": {
+            "file": "practice/web-can-edit/starter.py"
+          },
+          "tests": {
+            "file": "practice/web-can-edit/tests.py"
+          },
+          "solution": {
+            "file": "practice/web-can-edit/solution.py"
+          }
+        },
+        {
+          "id": "web-quiz-sha256-passwords",
+          "type": "quiz",
+          "question": "Why is storing `sha256(password)` not good enough for passwords?",
+          "options": [
+            "SHA-256 can be reversed to get the password back",
+            "SHA-256 is so fast that attackers can try billions of guesses per second, and without a salt, identical passwords share a hash",
+            "SHA-256 hashes are too long to store",
+            "SHA-256 is not available in Python"
+          ],
+          "answer": 1,
+          "explanation": "Hashes can't be reversed, but they can be **guessed**: hash every likely password and look for matches. SHA-256 is built to be fast, which helps attackers. Password hashes need a per-user **salt** and a deliberately **slow** algorithm: Argon2, scrypt or bcrypt, from a library."
+        },
+        {
+          "id": "web-quiz-401-vs-403",
+          "type": "quiz",
+          "question": "User 7 is logged in with a valid token and sends `DELETE /notes/99`, a note owned by user 8. What should the API answer?",
+          "options": [
+            "401 Unauthorized",
+            "403 Forbidden (or 404, to hide that the note exists)",
+            "200 OK, and delete the note",
+            "400 Bad Request"
+          ],
+          "answer": 1,
+          "explanation": "**401** means \"who are you?\": no or invalid credentials. Here the user is known, they just aren't allowed, which is **403**. Some APIs answer 404 so attackers can't even tell the note exists. Answering 200 would be **broken access control**, the top risk on the OWASP Top 10."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "web-project",
+    "title": "A REST API with FastAPI",
+    "brief": {
+      "file": "projects/web-and-apis.md"
+    },
+    "checklist": [
+      "CRUD API for a resource you care about (habits, recipes, book club), with 6+ endpoints",
+      "Pydantic models for requests and responses; correct status codes (201, 204, 400/422, 404, 409)",
+      "SQLite through your own repository layer, injected with Depends (no ORM)",
+      "Passwords hashed with a library (argon2-cffi or bcrypt); login returns a signed, expiring token",
+      "Users can only change their own data, and a test proves user A can't edit user B's item (403 or 404)",
+      "Tests with TestClient for every endpoint, including the error paths, using a fresh database per test",
+      "Secrets read from environment variables; nothing secret committed",
+      "Auto docs at /docs, and a README with setup steps and an example request and response"
+    ],
+    "links": true
+  }
+}

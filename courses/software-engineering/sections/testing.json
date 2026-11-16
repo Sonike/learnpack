@@ -1,0 +1,403 @@
+{
+  "id": "testing",
+  "title": "Testing and test-driven development",
+  "summary": "Writing tests that catch real bugs: pytest, edge cases, TDD, mocks and dependency injection, integration tests and CI. Project: a full test suite and CI for your library system.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "why-and-how-we-test",
+      "title": "Why and how we test",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "tIrcxwLqzjQ",
+          "title": "CS50P: Lecture 5, Unit Tests"
+        }
+      ],
+      "body": {
+        "file": "lessons/testing/why-and-how-we-test.md"
+      },
+      "resources": [
+        {
+          "title": "pytest: Get started",
+          "url": "https://docs.pytest.org/en/stable/getting-started.html"
+        },
+        {
+          "title": "CS50's Introduction to Programming with Python",
+          "url": "https://cs50.harvard.edu/python/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "tst-leap-year-checker",
+          "type": "code",
+          "title": "Write tests that catch bugs",
+          "prompt": {
+            "file": "practice/tst-leap-year-checker/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-leap-year-checker/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-leap-year-checker/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-leap-year-checker/solution.py"
+          }
+        },
+        {
+          "id": "tst-quiz-what-tests-prove",
+          "type": "quiz",
+          "question": "Your three tests for `is_leap_year` all pass. What have they proven?",
+          "options": [
+            "The function is correct for every year",
+            "The function gives the right answer for the three years you tested",
+            "The function has no bugs",
+            "The function is fast"
+          ],
+          "answer": 1,
+          "explanation": "A test proves behaviour **only for the inputs it tries**. A function that ignores the century rules passes tests that only check 2024 and 2023. Choose cases that would catch specific bugs: ordinary years, centuries, and every 400 years."
+        },
+        {
+          "id": "tst-quiz-read-failure",
+          "type": "quiz",
+          "question": "pytest prints:\n```\n>       assert slugify(\"Hello World\") == \"hello-world\"\nE       AssertionError: assert 'Hello-World' == 'hello-world'\n```\nWhat does it tell you?",
+          "options": [
+            "The test file has a syntax error",
+            "`slugify` returned `'Hello-World'` but the test expected `'hello-world'`: it didn't lowercase",
+            "The test expected `'Hello-World'`",
+            "pytest couldn't find `slugify`"
+          ],
+          "answer": 1,
+          "explanation": "The `>` marks the failing line, and the `E` line shows both sides of `==`: the left is what the code returned, the right is what the test expected. Here the capital letters survived, so the lowercasing step is missing."
+        }
+      ]
+    },
+    {
+      "id": "writing-good-unit-tests",
+      "title": "Writing good unit tests",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "6tNS--WetLI",
+          "title": "Corey Schafer: Unit Testing Your Code with the unittest Module"
+        }
+      ],
+      "body": {
+        "file": "lessons/testing/writing-good-unit-tests.md"
+      },
+      "resources": [
+        {
+          "title": "Martin Fowler: The Practical Test Pyramid",
+          "url": "https://martinfowler.com/articles/practical-test-pyramid.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "tst-slugify",
+          "type": "code",
+          "title": "Slugify a title",
+          "prompt": {
+            "file": "practice/tst-slugify/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-slugify/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-slugify/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-slugify/solution.py"
+          }
+        },
+        {
+          "id": "tst-slugify-checker",
+          "type": "code",
+          "title": "Catch eight broken slugifiers",
+          "prompt": {
+            "file": "practice/tst-slugify-checker/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-slugify-checker/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-slugify-checker/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-slugify-checker/solution.py"
+          }
+        },
+        {
+          "id": "tst-quiz-implementation-details",
+          "type": "quiz",
+          "question": "Which test is testing **implementation details** rather than behaviour?",
+          "options": [
+            "`tasks.add(\"Buy milk\"); assert tasks._tasks == {1: Task(1, \"Buy milk\")}`",
+            "`tasks.add(\"Buy milk\"); assert [t.title for t in tasks.by_status(Status.TODO)] == [\"Buy milk\"]`",
+            "`assert slugify(\"a -- b\") == \"a-b\"`",
+            "`with pytest.raises(KeyError): tasks.complete(99)`"
+          ],
+          "answer": 0,
+          "explanation": "The first test reads a private attribute (`_tasks`), so it breaks if you switch the internal dict to a list, even though nothing visible changed. The others only use public methods and check results a caller can see, so they survive refactoring."
+        },
+        {
+          "id": "tst-quiz-missing-edge-case",
+          "type": "quiz",
+          "question": "You're testing `can_borrow(loans_count)`, which should allow at most 5 loans. You have tests for 0 and 2 loans. Which case is most important to add?",
+          "options": [
+            "100 loans",
+            "Exactly 5 and 6 loans",
+            "1 loan",
+            "3 loans"
+          ],
+          "answer": 1,
+          "explanation": "Bugs cluster at **boundaries**. Off-by-one mistakes (`<` instead of `<=`) only show up exactly at the limit and just past it. Test 5 (the last allowed) and 6 (the first refused); 4 is a good third."
+        }
+      ]
+    },
+    {
+      "id": "test-driven-development",
+      "title": "Test-driven development",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "B1j6k2j2eJg",
+          "title": "ArjanCodes: Test-Driven Development in Python, Red-Green-Refactor"
+        }
+      ],
+      "body": {
+        "file": "lessons/testing/test-driven-development.md"
+      },
+      "resources": [
+        {
+          "title": "Martin Fowler: Test Driven Development",
+          "url": "https://martinfowler.com/bliki/TestDrivenDevelopment.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "tst-string-calculator",
+          "type": "code",
+          "title": "TDD kata: the string calculator",
+          "prompt": {
+            "file": "practice/tst-string-calculator/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-string-calculator/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-string-calculator/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-string-calculator/solution.py"
+          }
+        },
+        {
+          "id": "tst-regression-fix",
+          "type": "code",
+          "title": "Fix a bug test-first",
+          "prompt": {
+            "file": "practice/tst-regression-fix/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-regression-fix/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-regression-fix/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-regression-fix/solution.py"
+          }
+        },
+        {
+          "id": "tst-quiz-tdd-order",
+          "type": "quiz",
+          "question": "What's the correct order of one TDD loop?",
+          "options": [
+            "Write the code, write a test, refactor",
+            "Write a failing test, write the least code to pass it, refactor while green",
+            "Refactor, write a test, write the code",
+            "Write all the tests for the feature, then write all the code"
+          ],
+          "answer": 1,
+          "explanation": "**Red, green, refactor.** Write one small failing test (proving it can fail), make it pass with the simplest code, then clean up while every test stays green. Then repeat with the next small piece of behaviour."
+        },
+        {
+          "id": "tst-quiz-passes-immediately",
+          "type": "quiz",
+          "question": "You write a new test in a TDD loop and it passes the first time you run it. What should you do?",
+          "options": [
+            "Celebrate and move on",
+            "Delete the test, since it's not needed",
+            "Check it: either the behaviour already exists, or the test is broken. Temporarily break the code to see it go red",
+            "Run it again until it fails"
+          ],
+          "answer": 2,
+          "explanation": "Never trust a test you haven't seen fail. It may pass because your earlier code was already general enough (fine, keep it), or because it isn't testing what you think: wrong function, an assert that can't fail, or a missing `test_` prefix."
+        }
+      ]
+    },
+    {
+      "id": "test-doubles-and-dependency-injection",
+      "title": "Test doubles and dependency injection",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/testing/test-doubles-and-dependency-injection.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: unittest.mock",
+          "url": "https://docs.python.org/3/library/unittest.mock.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "tst-send-reminders",
+          "type": "code",
+          "title": "Send reminders for overdue tasks",
+          "prompt": {
+            "file": "practice/tst-send-reminders/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-send-reminders/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-send-reminders/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-send-reminders/solution.py"
+          }
+        },
+        {
+          "id": "tst-fetch-weather-retry",
+          "type": "code",
+          "title": "Retry a flaky network call",
+          "prompt": {
+            "file": "practice/tst-fetch-weather-retry/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-fetch-weather-retry/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-fetch-weather-retry/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-fetch-weather-retry/solution.py"
+          }
+        },
+        {
+          "id": "tst-quiz-fake-or-mock",
+          "type": "quiz",
+          "question": "You're testing `charge_customer(order, payments)`, whose whole job is to call `payments.charge(customer_id, amount)` exactly once. Which double fits best?",
+          "options": [
+            "A mock, so the test can assert `charge` was called once with the right arguments",
+            "A stub that returns canned data, then check the return value only",
+            "The real payments service",
+            "No double: test it by reading the code"
+          ],
+          "answer": 0,
+          "explanation": "When **the call itself is the behaviour** (charging a card, sending an email), use a mock and assert how it was called: `payments.charge.assert_called_once_with(\"c1\", 1250)`. Stubs and fakes fit better when you care about the result your code produces from the data a dependency supplies."
+        },
+        {
+          "id": "tst-quiz-patch-datetime",
+          "type": "quiz",
+          "question": "A team tests time-dependent code by using `patch(\"datetime.datetime\")` in dozens of tests. What's the main problem?",
+          "options": [
+            "`patch` is slow",
+            "The tests are tied to how each module imports `datetime`, so they silently stop working or break on harmless import changes; passing `now` in as an argument is simpler and sturdier",
+            "`datetime` can't be patched at all",
+            "Mocks can't return dates"
+          ],
+          "answer": 1,
+          "explanation": "`patch` must target the name **where it's looked up** (`\"reports.datetime\"`, not `\"datetime.datetime\"`), so these tests depend on import details and often patch the wrong thing. Injecting `now` (or a clock function) makes the dependency explicit, and the tests need no patching at all."
+        }
+      ]
+    },
+    {
+      "id": "testing-strategy",
+      "title": "Testing strategy",
+      "duration": "60 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/testing/testing-strategy.md"
+      },
+      "resources": [
+        {
+          "title": "Martin Fowler: Test Pyramid",
+          "url": "https://martinfowler.com/bliki/TestPyramid.html"
+        },
+        {
+          "title": "Martin Fowler: The Practical Test Pyramid",
+          "url": "https://martinfowler.com/articles/practical-test-pyramid.html"
+        },
+        {
+          "title": "GitHub docs: Building and testing Python",
+          "url": "https://docs.github.com/en/actions/tutorials/build-and-test-code/python"
+        }
+      ],
+      "practice": [
+        {
+          "id": "tst-repository-checker",
+          "type": "code",
+          "title": "Integration-test a SQLite repository",
+          "prompt": {
+            "file": "practice/tst-repository-checker/prompt.md"
+          },
+          "starter": {
+            "file": "practice/tst-repository-checker/starter.py"
+          },
+          "tests": {
+            "file": "practice/tst-repository-checker/tests.py"
+          },
+          "solution": {
+            "file": "practice/tst-repository-checker/solution.py"
+          }
+        },
+        {
+          "id": "tst-quiz-pyramid",
+          "type": "quiz",
+          "question": "A test creates a `TaskRepository` on `sqlite3.connect(\":memory:\")`, adds two tasks, completes one and checks the other is still not done. What kind of test is it?",
+          "options": [
+            "Unit test",
+            "Integration test",
+            "End-to-end test",
+            "Not a real test, because the database isn't on disk"
+          ],
+          "answer": 1,
+          "explanation": "It checks your code working together with a **real** database (SQLite in memory is real SQL), so it's an integration test. A unit test would replace the database with a fake; an end-to-end test would drive the whole running app as a user would."
+        },
+        {
+          "id": "tst-quiz-coverage",
+          "type": "quiz",
+          "question": "Your project has 100% line coverage. What does that guarantee?",
+          "options": [
+            "The code has no bugs",
+            "Every line ran at least once during the tests, nothing more",
+            "Every branch of every `if` was tested",
+            "Every test has a meaningful assert"
+          ],
+          "answer": 1,
+          "explanation": "Coverage only records which lines **ran**. A test with no assert still counts, both sides of an `if` may not have been taken (that needs branch coverage), and missing code, like an unhandled empty list, has no line to report. Use coverage as a flashlight for untested code, not as proof of quality."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "tst-project",
+    "title": "Tested library system",
+    "brief": {
+      "file": "projects/testing.md"
+    },
+    "checklist": [
+      "A pytest suite for the library system with 90%+ branch coverage (report in the README)",
+      "Edge cases and boundaries tested for every rule; table-driven tests for fees",
+      "At least one feature built test-first, with commit history showing red, green, refactor",
+      "Mocks only at the boundaries (clock, notifier); real objects everywhere else",
+      "One refactor done under test, with before and after in the pull request",
+      "GitHub Actions runs ruff and pytest on every push, with a status badge in the README",
+      "A bug written up as an issue, then fixed in a pull request that starts with a failing regression test"
+    ],
+    "links": true
+  }
+}

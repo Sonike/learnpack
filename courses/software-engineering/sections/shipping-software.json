@@ -1,0 +1,447 @@
+{
+  "id": "shipping-software",
+  "title": "The OS, configuration, logging, deploying and design",
+  "summary": "Take code from your laptop to a running service: processes and exit codes, config and secrets, structured logging, CI and deploys, and designing small systems with honest trade-offs.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "processes-memory-and-the-os",
+      "title": "Processes, memory and the operating system",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "26QPDBe-NB8",
+          "title": "Operating Systems: Crash Course Computer Science #18"
+        },
+        {
+          "youtube": "ccBGsPedE9Q",
+          "title": "Missing Semester (2026), Lecture 2: Command-line Environment"
+        }
+      ],
+      "body": {
+        "file": "lessons/shipping-software/processes-memory-and-the-os.md"
+      },
+      "resources": [
+        {
+          "title": "Missing Semester: Command-line Environment",
+          "url": "https://missing.csail.mit.edu/2026/command-line-environment/"
+        },
+        {
+          "title": "Operating Systems: Three Easy Pieces (free book, optional depth)",
+          "url": "https://pages.cs.wisc.edu/~remzi/OSTEP/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "ship-word-count-cli",
+          "type": "code",
+          "title": "A wc-style command-line tool",
+          "prompt": {
+            "file": "practice/ship-word-count-cli/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-word-count-cli/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-word-count-cli/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-word-count-cli/solution.py"
+          }
+        },
+        {
+          "id": "ship-quiz-exit-code",
+          "type": "quiz",
+          "question": "Your script catches an exception, prints `Error: upload failed`, and then reaches the end of the file normally. The CI job that runs it shows a green tick. Why?",
+          "options": [
+            "CI only reads stderr, and the message went to stdout",
+            "The script exited with code 0, and CI judges success purely by the exit code",
+            "CI ignores Python errors unless they are uncaught",
+            "Printing the word `Error` is not enough; it must be in capitals"
+          ],
+          "answer": 1,
+          "explanation": "Automated tools trust the **exit code**: `0` means success. A script that falls off the end exits with `0`, whatever it printed. Return a non-zero code (for example `return 1` from `main`, then `sys.exit(main())`) whenever the job didn't get done, and write the message to `sys.stderr`."
+        },
+        {
+          "id": "ship-quiz-streams",
+          "type": "quiz",
+          "question": "You run `python3 report.py > report.txt`. Which output still appears on your screen?",
+          "options": [
+            "Everything the script prints",
+            "Only what was written to `sys.stderr`",
+            "Only what was written with `print()`",
+            "Nothing: `>` silences the whole process"
+          ],
+          "answer": 1,
+          "explanation": "`>` redirects **stdout** (where `print` writes by default) into the file. **stderr** is a separate stream and still goes to the terminal. That's why errors and diagnostics belong on stderr: results stay clean for files and pipes, and people still see the warnings."
+        }
+      ]
+    },
+    {
+      "id": "configuration-and-secrets",
+      "title": "Configuration and secrets",
+      "duration": "70 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/shipping-software/configuration-and-secrets.md"
+      },
+      "resources": [
+        {
+          "title": "The Twelve-Factor App",
+          "url": "https://12factor.net/"
+        },
+        {
+          "title": "Python docs: os (os.environ)",
+          "url": "https://docs.python.org/3/library/os.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "ship-load-config",
+          "type": "code",
+          "title": "Load and validate configuration",
+          "prompt": {
+            "file": "practice/ship-load-config/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-load-config/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-load-config/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-load-config/solution.py"
+          }
+        },
+        {
+          "id": "ship-find-secrets",
+          "type": "code",
+          "title": "Find secrets before they're committed",
+          "prompt": {
+            "file": "practice/ship-find-secrets/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-find-secrets/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-find-secrets/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-find-secrets/solution.py"
+          }
+        },
+        {
+          "id": "ship-quiz-leaked-key",
+          "type": "quiz",
+          "question": "You notice you pushed a real API key to a public GitHub repo 10 minutes ago. What should you do **first**?",
+          "options": [
+            "Delete the line, commit and push again",
+            "Rewrite the Git history so the key disappears",
+            "Revoke the key at the provider and create a new one",
+            "Make the repository private"
+          ],
+          "answer": 2,
+          "explanation": "**Rotate first.** Bots scan public GitHub constantly, so assume the key is already copied. Deleting the line or rewriting history doesn't help if someone has it; making the repo private doesn't either. Once the old key is revoked, the leak is harmless. Then store the new key in an environment variable, tell your lead, and clean up the history."
+        },
+        {
+          "id": "ship-quiz-env-vs-code",
+          "type": "quiz",
+          "question": "Which of these belongs in an environment variable rather than in the code?",
+          "options": [
+            "The rule that orders over $50 ship free",
+            "The list of valid order statuses",
+            "The database URL",
+            "The function that formats prices"
+          ],
+          "answer": 2,
+          "explanation": "Config is whatever **changes between environments** (laptop, CI, staging, production): the database URL differs in each, and it may contain a password. Business rules, valid statuses and formatting are logic: the same everywhere, so they belong in code."
+        }
+      ]
+    },
+    {
+      "id": "logging-and-observability",
+      "title": "Logging and observability",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "-ARI4Cz-awo",
+          "title": "Corey Schafer: Logging Basics - Logging to Files, Setting Levels, and Formatting"
+        }
+      ],
+      "body": {
+        "file": "lessons/shipping-software/logging-and-observability.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: Logging HOWTO",
+          "url": "https://docs.python.org/3/howto/logging.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "ship-json-formatter",
+          "type": "code",
+          "title": "A JSON log formatter",
+          "prompt": {
+            "file": "practice/ship-json-formatter/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-json-formatter/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-json-formatter/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-json-formatter/solution.py"
+          }
+        },
+        {
+          "id": "ship-redact",
+          "type": "code",
+          "title": "Redact secrets before logging",
+          "prompt": {
+            "file": "practice/ship-redact/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-redact/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-redact/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-redact/solution.py"
+          }
+        },
+        {
+          "id": "ship-quiz-log-level",
+          "type": "quiz",
+          "question": "A call to the payment API timed out, your code retried, and the second attempt succeeded. Which level fits best?",
+          "options": [
+            "DEBUG",
+            "INFO",
+            "WARNING",
+            "ERROR"
+          ],
+          "answer": 2,
+          "explanation": "Something unexpected happened but the program **coped**, and the user got what they asked for: that's `WARNING`. `ERROR` is for an operation that actually failed (the payment never went through). `INFO` is for normal events, and `DEBUG` for detail you only want while investigating."
+        },
+        {
+          "id": "ship-quiz-log-body",
+          "type": "quiz",
+          "question": "What's the main problem with `logger.info(\"login\", extra={\"body\": request_body})` on a login endpoint?",
+          "options": [
+            "JSON logs can't contain nested dicts",
+            "It writes the user's password (and maybe other personal data) into the logs",
+            "`extra=` only accepts strings",
+            "INFO is the wrong level for logins"
+          ],
+          "answer": 1,
+          "explanation": "A login request body contains the **password**. Logs are copied to log platforms and read by many people, so treat them as semi-public. Log the fields you need (`user_id`, `path`, `status`) and run a redaction step as a safety net."
+        }
+      ]
+    },
+    {
+      "id": "packaging-ci-and-deploying",
+      "title": "Packaging, CI and deploying",
+      "duration": "80 min",
+      "videos": [
+        {
+          "youtube": "KBMiB-8P4Ns",
+          "title": "Missing Semester (2026), Lecture 6: Packaging and Shipping Code"
+        },
+        {
+          "youtube": "Gjnup-PuquQ",
+          "title": "Fireship: Docker in 100 Seconds"
+        },
+        {
+          "youtube": "3c-iBn73dDE",
+          "title": "TechWorld with Nana: Docker Tutorial for Beginners (optional, 3 hours)"
+        }
+      ],
+      "body": {
+        "file": "lessons/shipping-software/packaging-ci-and-deploying.md"
+      },
+      "resources": [
+        {
+          "title": "Missing Semester: Packaging and Shipping Code",
+          "url": "https://missing.csail.mit.edu/2026/shipping-code/"
+        },
+        {
+          "title": "uv documentation",
+          "url": "https://docs.astral.sh/uv/"
+        },
+        {
+          "title": "Docker: Get started",
+          "url": "https://docs.docker.com/get-started/"
+        },
+        {
+          "title": "Render: Deploy a FastAPI app",
+          "url": "https://render.com/docs/deploy-fastapi"
+        },
+        {
+          "title": "PythonAnywhere",
+          "url": "https://www.pythonanywhere.com/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "ship-check-pyproject",
+          "type": "code",
+          "title": "Check a pyproject.toml",
+          "prompt": {
+            "file": "practice/ship-check-pyproject/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-check-pyproject/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-check-pyproject/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-check-pyproject/solution.py"
+          }
+        },
+        {
+          "id": "ship-deploy-decision",
+          "type": "code",
+          "title": "Should we deploy?",
+          "prompt": {
+            "file": "practice/ship-deploy-decision/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-deploy-decision/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-deploy-decision/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-deploy-decision/solution.py"
+          }
+        },
+        {
+          "id": "ship-quiz-ci-order",
+          "type": "quiz",
+          "question": "Which order of CI stages makes the most sense?",
+          "options": [
+            "test → lint → install → deploy",
+            "install → lint → test → deploy",
+            "deploy → test → lint → install",
+            "lint → deploy → install → test"
+          ],
+          "answer": 1,
+          "explanation": "You can't lint or test without the dependencies, so **install** comes first. Then the cheapest, fastest check (**lint**, seconds), then **tests**, and **deploy** only if everything before it passed. Each stage stops the pipeline with a non-zero exit code."
+        },
+        {
+          "id": "ship-quiz-container",
+          "type": "quiz",
+          "question": "What does a Docker container include that a virtual environment doesn't?",
+          "options": [
+            "Your project's Python packages",
+            "Your source code",
+            "The Python interpreter and the operating-system files it runs on",
+            "Your Git history"
+          ],
+          "answer": 2,
+          "explanation": "A venv isolates **packages** but uses the machine's own Python and OS. A container image bundles the OS files, the interpreter, the packages and your code, so it runs the same on any Docker host. Neither includes your Git history."
+        }
+      ]
+    },
+    {
+      "id": "designing-small-systems",
+      "title": "Designing small systems",
+      "duration": "80 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/shipping-software/designing-small-systems.md"
+      },
+      "resources": [
+        {
+          "title": "Martin Fowler: Technical Debt",
+          "url": "https://martinfowler.com/bliki/TechnicalDebt.html"
+        },
+        {
+          "title": "Missing Semester: Beyond the Code",
+          "url": "https://missing.csail.mit.edu/2026/beyond-code/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "ship-lru-cache",
+          "type": "code",
+          "title": "An LRU cache, with expiry",
+          "prompt": {
+            "file": "practice/ship-lru-cache/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-lru-cache/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-lru-cache/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-lru-cache/solution.py"
+          }
+        },
+        {
+          "id": "ship-url-shortener",
+          "type": "code",
+          "title": "A URL shortener",
+          "prompt": {
+            "file": "practice/ship-url-shortener/prompt.md"
+          },
+          "starter": {
+            "file": "practice/ship-url-shortener/starter.py"
+          },
+          "tests": {
+            "file": "practice/ship-url-shortener/tests.py"
+          },
+          "solution": {
+            "file": "practice/ship-url-shortener/solution.py"
+          }
+        },
+        {
+          "id": "ship-quiz-component",
+          "type": "quiz",
+          "question": "Users upload a photo, and the app must create three resized copies, which takes about 8 seconds. Where should the resizing happen?",
+          "options": [
+            "In the API request, so the user waits for it",
+            "In a background job: the API saves the upload, queues the work and answers immediately",
+            "In the client, before uploading",
+            "In the cache"
+          ],
+          "answer": 1,
+          "explanation": "Slow work (more than about a second) that can happen a moment later belongs in a **background job**. The request stays fast and failures can be retried. Doing it in the request makes users wait 8 seconds; the client can't be trusted to do it; a cache stores copies of data, it doesn't do work."
+        },
+        {
+          "id": "ship-quiz-when-cache",
+          "type": "quiz",
+          "question": "When is adding a cache a good idea?",
+          "options": [
+            "Whenever a page feels slow on your laptop",
+            "For a user's account balance, so it loads instantly",
+            "For data that is measured as slow to get, requested often, and fine to be slightly out of date",
+            "Before launch, in case traffic grows"
+          ],
+          "answer": 2,
+          "explanation": "A cache trades **freshness** for speed and adds stale-data bugs. Add one when you can name the measured slow thing, it's requested often, and slightly old data is acceptable. A balance fails the last test, and caching \"in case\" is solving a problem you don't have."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "ship-project",
+    "title": "Ship it: deploy your API",
+    "brief": {
+      "file": "projects/shipping-software.md"
+    },
+    "checklist": [
+      "Config from environment variables; no secrets in the repo (secret scan passes)",
+      "Structured JSON logging with redaction",
+      "CI pipeline: ruff → tests → deploy on `main` only",
+      "Live on a free PaaS with a `/health` endpoint",
+      "A one-page design doc: components, data model, one trade-off you made and why",
+      "A rollback tested once (redeploy the previous version)"
+    ],
+    "links": true
+  }
+}

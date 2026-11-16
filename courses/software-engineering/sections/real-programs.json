@@ -1,0 +1,633 @@
+{
+  "id": "real-programs",
+  "title": "Errors, debugging, files and modules",
+  "summary": "Read tracebacks, handle and raise exceptions, debug with a method, work with files, CSV and JSON, use modules and the standard library, and write Pythonic loops. Project: a file organiser CLI with undo.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "reading-errors-and-tracebacks",
+      "title": "Reading errors and tracebacks",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "LW7g1169v7w",
+          "title": "CS50P: Lecture 3, Exceptions"
+        }
+      ],
+      "body": {
+        "file": "lessons/real-programs/reading-errors-and-tracebacks.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Errors and exceptions",
+          "url": "https://docs.python.org/3/tutorial/errors.html"
+        },
+        {
+          "title": "Python docs: Built-in exceptions",
+          "url": "https://docs.python.org/3/library/exceptions.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "rp-parse-traceback",
+          "type": "code",
+          "title": "Read a traceback with code",
+          "prompt": {
+            "file": "practice/rp-parse-traceback/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-parse-traceback/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-parse-traceback/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-parse-traceback/solution.py"
+          }
+        },
+        {
+          "id": "rp-fix-the-bugs",
+          "type": "code",
+          "title": "Fix three classic bugs",
+          "prompt": {
+            "file": "practice/rp-fix-the-bugs/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-fix-the-bugs/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-fix-the-bugs/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-fix-the-bugs/solution.py"
+          }
+        },
+        {
+          "id": "rp-quiz-traceback-first-look",
+          "type": "quiz",
+          "question": "Your program crashes with this traceback. Which line should you look at **first** to find the mistake?\n\n```\nTraceback (most recent call last):\n  File \"main.py\", line 20, in <module>\n    report(orders)\n  File \"main.py\", line 14, in report\n    print(summarise(o))\n  File \"main.py\", line 8, in summarise\n    return order[\"customer\"].upper()\nAttributeError: 'NoneType' object has no attribute 'upper'\n```",
+          "options": [
+            "main.py line 20, because it's where the program started",
+            "main.py line 14, because it calls print",
+            "main.py line 8, because it's the innermost frame in your code",
+            "The `Traceback (most recent call last)` header"
+          ],
+          "answer": 2,
+          "explanation": "Read tracebacks **bottom-up**. The last line says what went wrong (`order[\"customer\"]` is `None`), and the frame just above it, line 8, is where it happened. The frames higher up only show how the program got there. Your next question is: *why* is the customer `None` for this order?"
+        },
+        {
+          "id": "rp-quiz-name-the-exception",
+          "type": "quiz",
+          "question": "Which exception does this code raise?\n\n```python\nscores = {\"ada\": 91, \"grace\": 85}\nprint(scores[\"alan\"])\n```",
+          "options": [
+            "`IndexError`",
+            "`KeyError`",
+            "`NameError`",
+            "`ValueError`"
+          ],
+          "answer": 1,
+          "explanation": "Looking up a key that isn't in a **dict** raises `KeyError: 'alan'`. `IndexError` is for a list position that doesn't exist, `NameError` for a variable that was never defined, and `ValueError` for a value of the right type that isn't acceptable (like `int(\"abc\")`). Use `scores.get(\"alan\")` if a missing key is normal."
+        }
+      ]
+    },
+    {
+      "id": "handling-exceptions",
+      "title": "Handling exceptions",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "NIWwJbo-9_8",
+          "title": "Corey Schafer: Using try/except blocks for error handling"
+        }
+      ],
+      "body": {
+        "file": "lessons/real-programs/handling-exceptions.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Errors and exceptions",
+          "url": "https://docs.python.org/3/tutorial/errors.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "rp-parse-age",
+          "type": "code",
+          "title": "Validate an age at the boundary",
+          "prompt": {
+            "file": "practice/rp-parse-age/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-parse-age/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-parse-age/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-parse-age/solution.py"
+          }
+        },
+        {
+          "id": "rp-safe-divide-all",
+          "type": "code",
+          "title": "Keep going when one item fails",
+          "prompt": {
+            "file": "practice/rp-safe-divide-all/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-safe-divide-all/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-safe-divide-all/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-safe-divide-all/solution.py"
+          }
+        },
+        {
+          "id": "rp-insufficient-funds",
+          "type": "code",
+          "title": "Your own exception class",
+          "prompt": {
+            "file": "practice/rp-insufficient-funds/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-insufficient-funds/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-insufficient-funds/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-insufficient-funds/solution.py"
+          }
+        },
+        {
+          "id": "rp-quiz-except-order",
+          "type": "quiz",
+          "question": "What does this print?\n\n```python\ntry:\n    print(10 / 0)\nexcept Exception:\n    print(\"something went wrong\")\nexcept ZeroDivisionError:\n    print(\"can't divide by zero\")\n```",
+          "options": [
+            "`can't divide by zero`",
+            "`something went wrong`",
+            "Both messages",
+            "A `ZeroDivisionError` traceback"
+          ],
+          "answer": 1,
+          "explanation": "Python checks `except` clauses **top to bottom** and runs the first one that matches. `ZeroDivisionError` is a kind of `Exception`, so the general clause catches it and the specific one is never reached. Always put the most specific exceptions first."
+        },
+        {
+          "id": "rp-quiz-finally",
+          "type": "quiz",
+          "question": "What does a `finally` block guarantee?",
+          "options": [
+            "It runs only if the `try` block raised an exception",
+            "It runs only if the `try` block raised nothing",
+            "It always runs: after success, after a caught exception, and even when an exception is about to crash the program or the `try` block returns",
+            "It stops any exception from crashing the program"
+          ],
+          "answer": 2,
+          "explanation": "`finally` is for clean-up that must happen whatever goes wrong, like closing a connection. It doesn't catch anything: an uncaught exception carries on after `finally` runs. The block that runs only when nothing was raised is `else`."
+        }
+      ]
+    },
+    {
+      "id": "debugging-systematically",
+      "title": "Debugging systematically",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "8VYT9TcUmKs",
+          "title": "Missing Semester 2026: Debugging and profiling"
+        },
+        {
+          "youtube": "l812pUnKxME",
+          "title": "Missing Semester 2020: Debugging and profiling"
+        }
+      ],
+      "body": {
+        "file": "lessons/real-programs/debugging-systematically.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: pdb, the Python debugger",
+          "url": "https://docs.python.org/3/library/pdb.html"
+        },
+        {
+          "title": "VS Code: Python debugging",
+          "url": "https://code.visualstudio.com/docs/python/debugging"
+        },
+        {
+          "title": "Julia Evans: A few debugging resources",
+          "url": "https://jvns.ca/blog/2019/06/23/a-few-debugging-resources/"
+        },
+        {
+          "title": "Simon Tatham: How to report bugs effectively",
+          "url": "https://www.chiark.greenend.org.uk/~sgtatham/bugs.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "rp-invoice-bug-hunt",
+          "type": "code",
+          "title": "Bug hunt: the invoice total",
+          "prompt": {
+            "file": "practice/rp-invoice-bug-hunt/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-invoice-bug-hunt/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-invoice-bug-hunt/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-invoice-bug-hunt/solution.py"
+          }
+        },
+        {
+          "id": "rp-first-bad-version",
+          "type": "code",
+          "title": "Find the first bad version (how git bisect works)",
+          "prompt": {
+            "file": "practice/rp-first-bad-version/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-first-bad-version/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-first-bad-version/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-first-bad-version/solution.py"
+          }
+        },
+        {
+          "id": "rp-quiz-debugging-order",
+          "type": "quiz",
+          "question": "A user reports that some invoices show the wrong total. What's the best order of steps?",
+          "options": [
+            "Fix the code you suspect, then ask the user if it's better",
+            "Reproduce the bug, form a hypothesis, test it with evidence, fix the cause, add a regression test",
+            "Add `try`/`except` around the total calculation, then reproduce",
+            "Rewrite the invoice code from scratch, then add tests"
+          ],
+          "answer": 1,
+          "explanation": "Debugging is a method: **reproduce** (so you can confirm the fix), **hypothesise** one specific cause, **test** it by looking at real values, **fix the cause** (not the symptom), and **add a regression test** so it can't come back. Changing code before you can reproduce the bug means you can't tell whether you fixed it."
+        },
+        {
+          "id": "rp-quiz-pdb-commands",
+          "type": "quiz",
+          "question": "You're paused at a `(Pdb)` prompt on the line `total = add_tax(subtotal)`. You want to go **inside** `add_tax` to watch it run. Which command?",
+          "options": [
+            "`n` (next)",
+            "`s` (step)",
+            "`c` (continue)",
+            "`p add_tax` (print)"
+          ],
+          "answer": 1,
+          "explanation": "`s` steps **into** the function called on the current line. `n` runs the whole line and stops at the next line of the current function, `c` runs until the next breakpoint, and `p expr` prints a value. In VS Code these are Step Into, Step Over and Continue."
+        }
+      ]
+    },
+    {
+      "id": "files-json-and-csv",
+      "title": "Files, JSON and CSV",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "KD-Yoel6EVQ",
+          "title": "CS50P: Lecture 6, File I/O"
+        },
+        {
+          "youtube": "Uh2ebFW8OYM",
+          "title": "Corey Schafer: File objects, reading and writing to files"
+        }
+      ],
+      "body": {
+        "file": "lessons/real-programs/files-json-and-csv.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Input and output",
+          "url": "https://docs.python.org/3/tutorial/inputoutput.html"
+        },
+        {
+          "title": "Python docs: json",
+          "url": "https://docs.python.org/3/library/json.html"
+        },
+        {
+          "title": "Python docs: pathlib",
+          "url": "https://docs.python.org/3/library/pathlib.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "rp-load-contacts",
+          "type": "code",
+          "title": "Load contacts from a messy CSV",
+          "prompt": {
+            "file": "practice/rp-load-contacts/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-load-contacts/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-load-contacts/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-load-contacts/solution.py"
+          }
+        },
+        {
+          "id": "rp-settings-json",
+          "type": "code",
+          "title": "Save and load settings as JSON",
+          "prompt": {
+            "file": "practice/rp-settings-json/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-settings-json/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-settings-json/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-settings-json/solution.py"
+          }
+        },
+        {
+          "id": "rp-csv-to-json",
+          "type": "code",
+          "title": "Convert a CSV file to JSON",
+          "prompt": {
+            "file": "practice/rp-csv-to-json/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-csv-to-json/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-csv-to-json/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-csv-to-json/solution.py"
+          }
+        },
+        {
+          "id": "rp-quiz-with-and-exceptions",
+          "type": "quiz",
+          "question": "```python\nwith open(\"log.txt\", \"a\", encoding=\"utf-8\") as f:\n    f.write(\"start\\n\")\n    1 / 0\n```\n\nWhat happens to the file?",
+          "options": [
+            "It stays open until the program ends",
+            "It's closed when the `with` block exits, even though an exception was raised, and `start` is saved",
+            "It's deleted because the block failed",
+            "Nothing is written, because the exception cancels the whole block"
+          ],
+          "answer": 1,
+          "explanation": "`with` guarantees the file is closed when the block ends, **however** it ends, including by an exception. Closing flushes buffered writes to disk, so `start` is saved. The `ZeroDivisionError` still carries on afterwards: `with` cleans up, it doesn't catch."
+        },
+        {
+          "id": "rp-quiz-csv-strings",
+          "type": "quiz",
+          "question": "A CSV file has a `price` column containing `4.50`. You read it with `csv.DictReader`. What is `row[\"price\"] * 2`?",
+          "options": [
+            "`9.0`",
+            "`\"4.504.50\"`",
+            "A `TypeError`",
+            "`\"9.00\"`"
+          ],
+          "answer": 1,
+          "explanation": "CSV is plain text, so **every value is a string**. Multiplying a string by 2 repeats it, with no error at all, which makes this bug easy to miss. Convert explicitly: `float(row[\"price\"]) * 2`."
+        }
+      ]
+    },
+    {
+      "id": "modules-packages-and-the-standard-library",
+      "title": "Modules, packages and the standard library",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "MztLZWibctI",
+          "title": "CS50P: Lecture 4, Libraries"
+        }
+      ],
+      "body": {
+        "file": "lessons/real-programs/modules-packages-and-the-standard-library.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Modules",
+          "url": "https://docs.python.org/3/tutorial/modules.html"
+        },
+        {
+          "title": "Python docs: argparse",
+          "url": "https://docs.python.org/3/library/argparse.html"
+        },
+        {
+          "title": "Python docs: collections",
+          "url": "https://docs.python.org/3/library/collections.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "rp-todo-argparse",
+          "type": "code",
+          "title": "A command-line interface with argparse",
+          "prompt": {
+            "file": "practice/rp-todo-argparse/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-todo-argparse/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-todo-argparse/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-todo-argparse/solution.py"
+          }
+        },
+        {
+          "id": "rp-days-until",
+          "type": "code",
+          "title": "Days until a date",
+          "prompt": {
+            "file": "practice/rp-days-until/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-days-until/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-days-until/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-days-until/solution.py"
+          }
+        },
+        {
+          "id": "rp-top-n",
+          "type": "code",
+          "title": "The most common words, with Counter",
+          "prompt": {
+            "file": "practice/rp-top-n/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-top-n/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-top-n/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-top-n/solution.py"
+          }
+        },
+        {
+          "id": "rp-quiz-dunder-name",
+          "type": "quiz",
+          "question": "`helpers.py` ends with:\n\n```python\nif __name__ == \"__main__\":\n    print(\"running demo\")\n```\n\nAnother file runs `import helpers`. Does `running demo` print?",
+          "options": [
+            "Yes, because importing runs the whole file",
+            "No, because when a file is imported, `__name__` is `\"helpers\"`, not `\"__main__\"`",
+            "Only the first time it's imported",
+            "No, because `if` blocks never run on import"
+          ],
+          "answer": 1,
+          "explanation": "Importing does run the module's top-level code, but `__name__` is set to the module's name (`\"helpers\"`). It's `\"__main__\"` only in the file you started with `python helpers.py`. That's why script-only code goes under this `if`."
+        },
+        {
+          "id": "rp-quiz-venv-pip",
+          "type": "quiz",
+          "question": "Your project's virtual environment `.venv` is active (the prompt shows `(.venv)`). Where does `pip install requests` put the package?",
+          "options": [
+            "In your system's Python, for every project",
+            "Inside `.venv` (in its `site-packages` folder), only for this environment",
+            "In the current folder, next to your code",
+            "In `requirements.txt`"
+          ],
+          "answer": 1,
+          "explanation": "With a venv active, `pip` installs into that environment's own `site-packages`, so each project has its own packages and versions. Nothing is written to `requirements.txt` automatically: record dependencies yourself (or let `uv add` do it)."
+        }
+      ]
+    },
+    {
+      "id": "pythonic-iteration",
+      "title": "Pythonic iteration",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "3dt4OGnU5sM",
+          "title": "Corey Schafer: Comprehensions, how they work and why to use them"
+        },
+        {
+          "youtube": "6pgodt1mezg",
+          "title": "CS50P: Lecture 9, Et Cetera"
+        }
+      ],
+      "body": {
+        "file": "lessons/real-programs/pythonic-iteration.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: Sorting techniques",
+          "url": "https://docs.python.org/3/howto/sorting.html"
+        },
+        {
+          "title": "Python tutorial: List comprehensions",
+          "url": "https://docs.python.org/3/tutorial/datastructures.html#list-comprehensions"
+        }
+      ],
+      "practice": [
+        {
+          "id": "rp-comprehensions",
+          "type": "code",
+          "title": "Rewrite loops as comprehensions",
+          "prompt": {
+            "file": "practice/rp-comprehensions/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-comprehensions/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-comprehensions/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-comprehensions/solution.py"
+          }
+        },
+        {
+          "id": "rp-sort-students",
+          "type": "code",
+          "title": "Sort students by grade, then name",
+          "prompt": {
+            "file": "practice/rp-sort-students/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-sort-students/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-sort-students/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-sort-students/solution.py"
+          }
+        },
+        {
+          "id": "rp-chunked",
+          "type": "code",
+          "title": "A lazy chunking generator",
+          "prompt": {
+            "file": "practice/rp-chunked/prompt.md"
+          },
+          "starter": {
+            "file": "practice/rp-chunked/starter.py"
+          },
+          "tests": {
+            "file": "practice/rp-chunked/tests.py"
+          },
+          "solution": {
+            "file": "practice/rp-chunked/solution.py"
+          }
+        },
+        {
+          "id": "rp-quiz-predict-comprehension",
+          "type": "quiz",
+          "question": "What does this print?\n\n```python\nprint([n * 10 for n in range(6) if n % 2 == 0])\n```",
+          "options": [
+            "`[0, 20, 40]`",
+            "`[10, 30, 50]`",
+            "`[0, 10, 20, 30, 40, 50]`",
+            "`[20, 40]`"
+          ],
+          "answer": 0,
+          "explanation": "`range(6)` is 0 to 5. The `if` keeps only even `n` (0, 2 and 4), and the expression at the front multiplies each by 10. Don't forget 0: it's even, and `range` starts there."
+        },
+        {
+          "id": "rp-quiz-generator-memory",
+          "type": "quiz",
+          "question": "You need the sum of the squares of the numbers from 0 to 99,999,999. Which uses far less memory?",
+          "options": [
+            "`sum([n * n for n in range(100_000_000)])`",
+            "`sum(n * n for n in range(100_000_000))`",
+            "They use the same memory",
+            "Neither works: the numbers are too big for Python"
+          ],
+          "answer": 1,
+          "explanation": "The list comprehension builds all 100 million squares in memory before `sum` starts. The **generator expression** produces one square at a time, and `sum` adds each and discards it. Same answer, a tiny fraction of the memory. Python ints have no size limit."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "rp-project",
+    "title": "File organiser CLI",
+    "brief": {
+      "file": "projects/real-programs.md"
+    },
+    "checklist": [
+      "`argparse` CLI: `organise <folder> [--dry-run]` sorts files into folders by type",
+      "Never overwrites: name clashes get a suffix like `holiday (1).jpg`",
+      "`--dry-run` prints the plan without moving anything",
+      "A JSON undo log, plus an `undo` command that restores every file",
+      "Clear error messages (no tracebacks) for missing folders, files passed as folders, and permission errors",
+      "Planning is separate from moving, and the planner is tested on a temporary folder",
+      "README with usage and a short write-up of one bug you found with the debugger and how"
+    ],
+    "links": true
+  }
+}

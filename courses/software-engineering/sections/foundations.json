@@ -1,0 +1,498 @@
+{
+  "id": "foundations",
+  "title": "How computers, files and the terminal work",
+  "summary": "What a computer does when it runs code, how files and paths work, the terminal commands every engineer uses, a proper Python setup, and how to learn (and use AI) without skipping the skill. Project: set up your machine like an engineer's.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "how-computers-run-code",
+      "title": "How computers run code",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "3LPJfIKxwWc",
+          "title": "CS50x 2024, Lecture 0: binary, ASCII and algorithms (first hour)"
+        },
+        {
+          "youtube": "QXjU9qTsYCc",
+          "title": "Frame of Essence: How do computers read code?"
+        },
+        {
+          "youtube": "O5nskjZ_GoI",
+          "title": "Crash Course Computer Science #1: Early Computing (optional context)"
+        }
+      ],
+      "body": {
+        "file": "lessons/foundations/how-computers-run-code.md"
+      },
+      "resources": [
+        {
+          "title": "CS50x: Harvard's introduction to computer science",
+          "url": "https://cs50.harvard.edu/x/"
+        },
+        {
+          "title": "Python Tutor: watch code run step by step",
+          "url": "https://pythontutor.com/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "fnd-binary",
+          "type": "code",
+          "title": "Convert numbers to and from binary",
+          "prompt": {
+            "file": "practice/fnd-binary/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-binary/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-binary/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-binary/solution.py"
+          }
+        },
+        {
+          "id": "fnd-utf8-bytes",
+          "type": "code",
+          "title": "How many bytes is this text?",
+          "prompt": {
+            "file": "practice/fnd-utf8-bytes/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-utf8-bytes/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-utf8-bytes/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-utf8-bytes/solution.py"
+          }
+        },
+        {
+          "id": "fnd-quiz-ram-vs-disk",
+          "type": "quiz",
+          "question": "You've been editing a document for an hour without saving, and the laptop's battery dies. Why is the work lost, while the file you saved yesterday is fine?",
+          "options": [
+            "The CPU deletes unfinished work when it shuts down",
+            "Unsaved work only existed in RAM, which is wiped when power goes off; saved files are on storage, which keeps data without power",
+            "Storage only keeps files older than one day",
+            "The operating system moves unsaved work to the Recycle Bin"
+          ],
+          "answer": 1,
+          "explanation": "**RAM** (memory) is fast but *volatile*: it needs power to hold data. **Storage** (SSD or disk) is slower but permanent. Saving copies your work from RAM to storage. The same is true of program variables: they live in RAM and vanish when the program ends, unless you write them to a file."
+        },
+        {
+          "id": "fnd-quiz-8-bits",
+          "type": "quiz",
+          "question": "How many different values can 8 bits (one byte) represent?",
+          "options": [
+            "8",
+            "16",
+            "255",
+            "256"
+          ],
+          "answer": 3,
+          "explanation": "Each extra bit doubles the count, so `n` bits hold `2ⁿ` values: 2⁸ = **256**. As unsigned whole numbers that's 0 to 255, which is why 255 is the *largest* value, not the number of values."
+        },
+        {
+          "id": "fnd-quiz-python-compiled",
+          "type": "quiz",
+          "question": "Which description of how `python3 hello.py` runs your code is most accurate?",
+          "options": [
+            "Python compiles hello.py straight to machine code for your CPU, like C",
+            "Python reads and runs your source text one character at a time, with no translation step",
+            "Python compiles your source to bytecode, then its virtual machine interprets that bytecode",
+            "Python sends your code to a server, which runs it and sends back the output"
+          ],
+          "answer": 2,
+          "explanation": "CPython first **compiles** your source into **bytecode** (instructions for Python's virtual machine, not for a real CPU), then **interprets** that bytecode. The `.pyc` files in `__pycache__` are saved bytecode. People call Python \"interpreted\" because you never run a separate compile step yourself."
+        }
+      ]
+    },
+    {
+      "id": "files-folders-and-paths",
+      "title": "Files, folders and paths",
+      "duration": "45 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/foundations/files-folders-and-paths.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: pathlib, object-oriented filesystem paths",
+          "url": "https://docs.python.org/3/library/pathlib.html"
+        },
+        {
+          "title": "Missing Semester 2026: Course overview and the shell",
+          "url": "https://missing.csail.mit.edu/2026/course-shell/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "fnd-resolve-path",
+          "type": "code",
+          "title": "Resolve a path by hand",
+          "prompt": {
+            "file": "practice/fnd-resolve-path/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-resolve-path/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-resolve-path/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-resolve-path/solution.py"
+          }
+        },
+        {
+          "id": "fnd-split-name",
+          "type": "code",
+          "title": "Split a file name into stem and extension",
+          "prompt": {
+            "file": "practice/fnd-split-name/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-split-name/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-split-name/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-split-name/solution.py"
+          }
+        },
+        {
+          "id": "fnd-quiz-dotdot-path",
+          "type": "quiz",
+          "question": "Your current folder is `/home/ada/projects/app`. Which file does the relative path `../data/file.csv` point to?",
+          "options": [
+            "`/home/ada/projects/app/data/file.csv`",
+            "`/home/ada/projects/data/file.csv`",
+            "`/home/ada/data/file.csv`",
+            "`/data/file.csv`"
+          ],
+          "answer": 1,
+          "explanation": "Start from the current folder and walk the path piece by piece: `..` goes up one level to `/home/ada/projects`, then into `data`, then `file.csv`. Only **one** `..`, so only one level up."
+        },
+        {
+          "id": "fnd-quiz-hidden-files",
+          "type": "quiz",
+          "question": "On macOS and Linux, what makes a file such as `.gitignore` or `.env` hidden?",
+          "options": [
+            "A special \"hidden\" permission set with a command",
+            "Its name starts with a dot",
+            "It has no file extension",
+            "It's stored inside the `.git` folder"
+          ],
+          "answer": 1,
+          "explanation": "That's the whole rule: names starting with `.` are hidden from file browsers and plain `ls`. Show them with `ls -a` (or Cmd+Shift+. in the macOS Finder). Windows uses a file attribute instead."
+        }
+      ]
+    },
+    {
+      "id": "the-terminal",
+      "title": "The terminal",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "MSgoeuMqUmU",
+          "title": "Missing Semester 2026, Lecture 1: Introduction to the Shell"
+        },
+        {
+          "youtube": "ZtqBQ68cfJc",
+          "title": "freeCodeCamp: The 50 most popular Linux and terminal commands"
+        }
+      ],
+      "body": {
+        "file": "lessons/foundations/the-terminal.md"
+      },
+      "resources": [
+        {
+          "title": "Missing Semester 2026: Course overview and the shell",
+          "url": "https://missing.csail.mit.edu/2026/course-shell/"
+        },
+        {
+          "title": "Missing Semester 2020: Shell tools and scripting",
+          "url": "https://missing.csail.mit.edu/2020/shell-tools/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "fnd-mini-shell",
+          "type": "code",
+          "title": "A mini shell",
+          "prompt": {
+            "file": "practice/fnd-mini-shell/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-mini-shell/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-mini-shell/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-mini-shell/solution.py"
+          }
+        },
+        {
+          "id": "fnd-parse-command",
+          "type": "code",
+          "title": "Split a command line into its parts",
+          "prompt": {
+            "file": "practice/fnd-parse-command/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-parse-command/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-parse-command/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-parse-command/solution.py"
+          }
+        },
+        {
+          "id": "fnd-quiz-pipe-redirect",
+          "type": "quiz",
+          "question": "What does `ls -la | grep py > out.txt` do?",
+          "options": [
+            "Lists the files, then runs every `.py` file and saves the output in out.txt",
+            "Lists all files (including hidden ones) in long format, keeps the lines containing \"py\", and writes them to out.txt, replacing its contents",
+            "Lists the files and appends every line to out.txt, then searches out.txt for \"py\"",
+            "Searches inside every file for the text \"py\" and saves the file names in out.txt"
+          ],
+          "answer": 1,
+          "explanation": "Read left to right: `ls -la` lists everything in long format, `|` **pipes** that output into `grep py`, which keeps only matching lines, and `>` **redirects** the result into `out.txt`, overwriting it. `grep` here filters `ls`'s output; it doesn't open the files."
+        },
+        {
+          "id": "fnd-quiz-append-vs-overwrite",
+          "type": "quiz",
+          "question": "`log.txt` already contains one line. You run `echo \"done\" > log.txt`. What does the file contain now?",
+          "options": [
+            "The original line, then `done`",
+            "Only `done`",
+            "`done`, then the original line",
+            "Nothing: `>` empties the file without writing"
+          ],
+          "answer": 1,
+          "explanation": "`>` **replaces** the file's contents; `>>` **appends** to the end. To keep the original line, you needed `echo \"done\" >> log.txt`. There's no undo, so be careful which one you type."
+        },
+        {
+          "id": "fnd-quiz-rm-no-undo",
+          "type": "quiz",
+          "question": "Which command deletes files with no Trash or Recycle Bin to recover them from?",
+          "options": [
+            "`mv`",
+            "`rm`",
+            "`cp`",
+            "`touch`"
+          ],
+          "answer": 1,
+          "explanation": "`rm` removes files permanently, and `rm -r` removes whole folders. Before running it, check where you are with `pwd` and list the target with `ls`. `mv` moves or renames, `cp` copies, and `touch` creates an empty file."
+        }
+      ]
+    },
+    {
+      "id": "your-python-setup",
+      "title": "Your Python setup",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "YYXdXT2l-Gg",
+          "title": "Corey Schafer: Install and set up Python on Mac and Windows"
+        },
+        {
+          "youtube": "Kg1Yvry_Ydk",
+          "title": "Corey Schafer: Virtual environments with venv"
+        },
+        {
+          "youtube": "QnM1nVzrkx8",
+          "title": "Missing Semester 2026, Lecture 3: Development environment and tools"
+        },
+        {
+          "youtube": "qh98qOND6MI",
+          "title": "ArjanCodes: uv, the fast tool that replaces pip and more"
+        }
+      ],
+      "body": {
+        "file": "lessons/foundations/your-python-setup.md"
+      },
+      "resources": [
+        {
+          "title": "Download Python",
+          "url": "https://www.python.org/downloads/"
+        },
+        {
+          "title": "VS Code: Getting started with Python",
+          "url": "https://code.visualstudio.com/docs/python/python-tutorial"
+        },
+        {
+          "title": "Python docs: venv, creating virtual environments",
+          "url": "https://docs.python.org/3/library/venv.html"
+        },
+        {
+          "title": "uv documentation",
+          "url": "https://docs.astral.sh/uv/"
+        },
+        {
+          "title": "pytest: Get started",
+          "url": "https://docs.pytest.org/en/stable/getting-started.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "fnd-greet",
+          "type": "code",
+          "title": "Your first solution: a greeting",
+          "prompt": {
+            "file": "practice/fnd-greet/prompt.md"
+          },
+          "starter": {
+            "file": "practice/fnd-greet/starter.py"
+          },
+          "tests": {
+            "file": "practice/fnd-greet/tests.py"
+          },
+          "solution": {
+            "file": "practice/fnd-greet/solution.py"
+          }
+        },
+        {
+          "id": "fnd-quiz-venv-isolates",
+          "type": "quiz",
+          "question": "What does a Python virtual environment (`.venv`) keep separate for each project?",
+          "options": [
+            "The project's source code, so other projects can't read it",
+            "The installed packages (and which Python runs them), so projects can need different versions",
+            "The project's Git history",
+            "Your operating system's settings"
+          ],
+          "answer": 1,
+          "explanation": "A venv is a private folder of **installed packages** plus a `python` that uses them. It doesn't touch your code or your files. That's why it's disposable: delete it and recreate it from `requirements.txt` whenever you like."
+        },
+        {
+          "id": "fnd-quiz-wrong-interpreter",
+          "type": "quiz",
+          "question": "`pip install requests` printed *Successfully installed*, but running your script gives `ModuleNotFoundError: No module named 'requests'`. What's the most likely cause?",
+          "options": [
+            "The package is broken and needs reinstalling",
+            "You must restart your computer after installing packages",
+            "The package was installed into a different Python from the one running your script",
+            "`requests` is part of the standard library, so it can't be installed"
+          ],
+          "answer": 2,
+          "explanation": "Two Pythons: usually the venv wasn't active where you ran `pip`, or VS Code is using another interpreter. Compare `which python` in the terminal with the interpreter in VS Code's status bar, and install with `python -m pip` using the same `python` you run."
+        },
+        {
+          "id": "fnd-quiz-repl-vs-script",
+          "type": "quiz",
+          "question": "In the REPL, typing `name.upper()` shows `'ADA'`. You put the same line in `hello.py` and run `python3 hello.py`. What appears?",
+          "options": [
+            "`'ADA'`, the same as in the REPL",
+            "`ADA` without quotes",
+            "Nothing: a script only shows what you `print`",
+            "An error, because `.upper()` only works in the REPL"
+          ],
+          "answer": 2,
+          "explanation": "The REPL **prints the value of each expression for you**. A script runs top to bottom and only shows output you ask for with `print`. The line still runs; its result is just thrown away."
+        }
+      ]
+    },
+    {
+      "id": "learning-like-an-engineer",
+      "title": "Learning like an engineer",
+      "duration": "40 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/foundations/learning-like-an-engineer.md"
+      },
+      "resources": [
+        {
+          "title": "Anthropic research: How AI assistance impacts the formation of coding skills",
+          "url": "https://www.anthropic.com/research/AI-assistance-coding-skills"
+        },
+        {
+          "title": "Simon Tatham: How to Report Bugs Effectively",
+          "url": "https://www.chiark.greenend.org.uk/~sgtatham/bugs.html"
+        },
+        {
+          "title": "Charity Majors: Generative AI is not going to build your engineering team for you",
+          "url": "https://stackoverflow.blog/2024/06/10/generative-ai-is-not-going-to-build-your-engineering-team-for-you/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "fnd-quiz-ai-builds-skill",
+          "type": "quiz",
+          "question": "You're learning a new library. Which way of using an AI assistant is **most likely to build** your skill, according to Anthropic's 2026 study?",
+          "options": [
+            "Paste the exercise and accept the code it writes",
+            "Paste the error and let it fix the bug for you",
+            "Write your own attempt, then ask it to explain a concept you're unsure about",
+            "Ask it to write the whole solution, then read it once"
+          ],
+          "answer": 2,
+          "explanation": "In the study, people who asked conceptual questions or asked for explanations kept their learning (65%+ on the quiz), while those who **delegated** writing code or debugging scored under 40%. Attempt first; use AI to explain, not to write."
+        },
+        {
+          "id": "fnd-quiz-ai-skips-skill",
+          "type": "quiz",
+          "question": "Which of these **skips** the skill an exercise was meant to build?",
+          "options": [
+            "Asking an AI \"what does this error message mean?\" after reading it yourself",
+            "Asking an AI to fix your failing test, then submitting its version without reading it",
+            "Asking an AI to explain the difference between `sort()` and `sorted()`",
+            "After passing, asking an AI to review your solution and suggest one improvement"
+          ],
+          "answer": 1,
+          "explanation": "Delegating the debugging was the pattern with the biggest learning loss in the study, and debugging is exactly what you'll need when AI-written code breaks. The rule: never keep code you can't explain. The other three use AI as a tutor or reviewer."
+        },
+        {
+          "id": "fnd-quiz-good-question",
+          "type": "quiz",
+          "question": "You're stuck and want to post a question. Which draft is most likely to get a fast, useful answer?",
+          "options": [
+            "\"my code doesnt work pls help\" with a screenshot of the whole file",
+            "\"Python is broken? sum gives wrong answer\"",
+            "\"I expect 3 + 4 from two input() calls to print 7 but get 34. Here's a 4-line example that shows it, and the full output. I checked the loop runs twice.\"",
+            "\"Can someone write a program that adds numbers from the user?\""
+          ],
+          "answer": 2,
+          "explanation": "A good question says what you're trying to do, includes a **minimal runnable example**, shows **expected vs actual** output as text, and lists what you've tried. (The answer here: `input()` returns strings, so `+` joins them.)"
+        },
+        {
+          "id": "fnd-quiz-predict-first",
+          "type": "quiz",
+          "question": "A test fails. What should you do before pressing Check again?",
+          "options": [
+            "Change something small and press Check to see if it helps",
+            "Read the failing test's message, then predict what your code returns for that input",
+            "Copy the whole exercise into an AI tool",
+            "Start again from the starter code"
+          ],
+          "answer": 1,
+          "explanation": "**Predict, then run.** The failure message says what was expected and what you returned. Working out *why* your code returns that is where the learning happens. Random changes until it passes teach nothing, and interviews have no Check button."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "fnd-project",
+    "title": "Your machine, set up like an engineer's",
+    "brief": {
+      "file": "projects/foundations.md"
+    },
+    "checklist": [
+      "Python 3.12 or newer installed, with your `python3 --version` output pasted into `SETUP.md`",
+      "VS Code with the Python extension, and the interpreter set to the project's `.venv`",
+      "A `projects/` folder structure created only with terminal commands, with the commands saved in `SETUP.md`",
+      "One script run three ways: in the REPL, with `python3 file.py`, and with the VS Code Run button",
+      "pytest installed in the venv, and one passing test run from the terminal (output pasted into `SETUP.md`)",
+      "A one-paragraph \"how I'll use AI while learning\" policy, in your own words"
+    ],
+    "links": false
+  }
+}

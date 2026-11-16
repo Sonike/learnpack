@@ -1,0 +1,66 @@
+{
+  "format": 1,
+  "id": "software-engineering",
+  "title": "Software Engineering: Zero to Job-Ready",
+  "description": "From never having programmed to a hireable junior software engineer: Python, the terminal, Git, clean code, testing, data structures and algorithms, SQL, web APIs, shipping software, teamwork and interviews.",
+  "language": "python",
+  "requirements": {
+    "python": [
+      "fastapi",
+      "httpx"
+    ]
+  },
+  "theme": {
+    "accent": "#2563EB"
+  },
+  "version": "1.0.0",
+  "author": {
+    "name": "Promise Okafor"
+  },
+  "license": "CC-BY-4.0",
+  "features": {
+    "notes": true,
+    "timer": true,
+    "focusMode": true,
+    "studyStats": true,
+    "review": true
+  },
+  "sections": [
+    {
+      "include": "sections/foundations.json"
+    },
+    {
+      "include": "sections/python-fundamentals.json"
+    },
+    {
+      "include": "sections/real-programs.json"
+    },
+    {
+      "include": "sections/git-and-github.json"
+    },
+    {
+      "include": "sections/oop-and-clean-code.json"
+    },
+    {
+      "include": "sections/testing.json"
+    },
+    {
+      "include": "sections/dsa-and-big-o.json"
+    },
+    {
+      "include": "sections/databases-and-sql.json"
+    },
+    {
+      "include": "sections/web-and-apis.json"
+    },
+    {
+      "include": "sections/shipping-software.json"
+    },
+    {
+      "include": "sections/engineer-at-work-and-hiring.json"
+    },
+    {
+      "include": "sections/capstones.json"
+    }
+  ]
+}

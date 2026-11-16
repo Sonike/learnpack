@@ -1,0 +1,505 @@
+{
+  "id": "oop-and-clean-code",
+  "title": "Objects, design and clean code",
+  "summary": "Classes, dataclasses and enums, composition and interfaces, type hints, readable code, and refactoring messy code safely. Project: a library system domain model.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "classes-and-objects",
+      "title": "Classes and objects",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "e4fwY9ZsxPw",
+          "title": "CS50P: Lecture 8, Object-Oriented Programming"
+        },
+        {
+          "youtube": "ZDa-Z5JzLYM",
+          "title": "Corey Schafer: Python OOP Tutorial 1, Classes and Instances"
+        }
+      ],
+      "body": {
+        "file": "lessons/oop-and-clean-code/classes-and-objects.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Classes",
+          "url": "https://docs.python.org/3/tutorial/classes.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "oop-bank-account",
+          "type": "code",
+          "title": "A bank account that protects its balance",
+          "prompt": {
+            "file": "practice/oop-bank-account/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-bank-account/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-bank-account/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-bank-account/solution.py"
+          }
+        },
+        {
+          "id": "oop-fraction",
+          "type": "code",
+          "title": "A Fraction class that behaves like a number",
+          "prompt": {
+            "file": "practice/oop-fraction/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-fraction/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-fraction/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-fraction/solution.py"
+          }
+        },
+        {
+          "id": "oop-quiz-self",
+          "type": "quiz",
+          "question": "Given `account = BankAccount(\"Ada\")`, what is `self` inside the method when you call `account.deposit(50)`?",
+          "options": [
+            "The `BankAccount` class itself",
+            "The `account` object the method was called on",
+            "The number `50`",
+            "A new, empty copy of the account"
+          ],
+          "answer": 1,
+          "explanation": "Python turns `account.deposit(50)` into `BankAccount.deposit(account, 50)`: the object before the dot is passed as the first argument, which by convention is named `self`. That's how one method definition works on any number of objects, each with its own attributes."
+        },
+        {
+          "id": "oop-quiz-shared-list",
+          "type": "quiz",
+          "question": "```python\nclass Cart:\n    items = []\n\n    def add(self, item):\n        self.items.append(item)\n\na, b = Cart(), Cart()\na.add(\"apple\")\nprint(b.items)\n```\nWhat does this print?",
+          "options": [
+            "`[]`",
+            "`['apple']`",
+            "`AttributeError`",
+            "`None`"
+          ],
+          "answer": 1,
+          "explanation": "`items = []` in the class body is a **class attribute**: one list shared by every `Cart`. `a.add` appends to that shared list, so `b` sees it too. Create mutable attributes in `__init__` (`self.items = []`) so each object gets its own list."
+        }
+      ]
+    },
+    {
+      "id": "modelling-data-with-dataclasses-and-enums",
+      "title": "Modelling data with dataclasses and enums",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "vRVVyl9uaZc",
+          "title": "ArjanCodes: If You're Not Using Python Data Classes Yet, You Should"
+        }
+      ],
+      "body": {
+        "file": "lessons/oop-and-clean-code/modelling-data-with-dataclasses-and-enums.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: dataclasses",
+          "url": "https://docs.python.org/3/library/dataclasses.html"
+        },
+        {
+          "title": "Python docs: enum",
+          "url": "https://docs.python.org/3/library/enum.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "oop-task-list",
+          "type": "code",
+          "title": "A task list with a dataclass and an Enum",
+          "prompt": {
+            "file": "practice/oop-task-list/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-task-list/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-task-list/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-task-list/solution.py"
+          }
+        },
+        {
+          "id": "oop-money",
+          "type": "code",
+          "title": "Money that can't be mixed up",
+          "prompt": {
+            "file": "practice/oop-money/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-money/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-money/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-money/solution.py"
+          }
+        },
+        {
+          "id": "oop-quiz-mutable-default",
+          "type": "quiz",
+          "question": "Why does `@dataclass` refuse `tags: list[str] = []` with `ValueError: mutable default ... use default_factory`?",
+          "options": [
+            "Dataclasses can't hold lists",
+            "The default would be one list shared by every object, so changing one object's tags would change them all",
+            "Lists aren't allowed as type hints",
+            "Default values must be immutable strings or numbers by Python syntax rules"
+          ],
+          "answer": 1,
+          "explanation": "A default is evaluated once, when the class is defined, so every object would get *the same* list. `field(default_factory=list)` calls `list()` for each new object, giving each its own fresh list. It's the same bug as a mutable class attribute, caught for you."
+        },
+        {
+          "id": "oop-quiz-frozen",
+          "type": "quiz",
+          "question": "You model money as `@dataclass(frozen=True) class Money: amount_cents: int; currency: str`. Which statement is true?",
+          "options": [
+            "`price.amount_cents = 0` raises `FrozenInstanceError`, and `Money` objects can be put in a set",
+            "`frozen=True` makes the amounts read-only but `Money` can't be compared with `==`",
+            "`frozen=True` stops Python from creating new `Money` objects",
+            "Frozen dataclasses can't have methods"
+          ],
+          "answer": 0,
+          "explanation": "Frozen dataclasses are **immutable**: assigning to a field raises `dataclasses.FrozenInstanceError`. Because they can't change, they're also hashable, so they work in sets and as dict keys. You still get `__eq__`, can add methods, and \"change\" a value by creating a new one (for example in `__add__`)."
+        }
+      ]
+    },
+    {
+      "id": "inheritance-composition-and-interfaces",
+      "title": "Inheritance, composition and interfaces",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/oop-and-clean-code/inheritance-composition-and-interfaces.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: abc (abstract base classes)",
+          "url": "https://docs.python.org/3/library/abc.html"
+        },
+        {
+          "title": "Python docs: typing (Protocol)",
+          "url": "https://docs.python.org/3/library/typing.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "oop-notifier-protocol",
+          "type": "code",
+          "title": "One function, many notifiers",
+          "prompt": {
+            "file": "practice/oop-notifier-protocol/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-notifier-protocol/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-notifier-protocol/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-notifier-protocol/solution.py"
+          }
+        },
+        {
+          "id": "oop-shapes-composition",
+          "type": "code",
+          "title": "Fix a broken hierarchy with composition",
+          "prompt": {
+            "file": "practice/oop-shapes-composition/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-shapes-composition/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-shapes-composition/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-shapes-composition/solution.py"
+          }
+        },
+        {
+          "id": "oop-quiz-is-a-has-a",
+          "type": "quiz",
+          "question": "Which pair is the best fit for **inheritance** (\"is a\", keeping every promise of the parent) rather than composition (\"has a\")?",
+          "options": [
+            "`Car` and `Engine`",
+            "`Library` and `Book`",
+            "`Order` and `OrderLine`",
+            "`SavingsAccount` and `Account`, where a savings account supports everything an account does and adds interest"
+          ],
+          "answer": 3,
+          "explanation": "A car *has* an engine, a library *has* books, an order *has* lines: composition. A savings account can be used anywhere an account is expected and keeps all its promises, so inheritance fits. Be careful with pairs like Square/Rectangle that sound like \"is a\" but break the parent's promises."
+        },
+        {
+          "id": "oop-quiz-super",
+          "type": "quiz",
+          "question": "```python\nclass Animal:\n    def __init__(self, name):\n        self.name = name\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        self.breed = breed\n\nprint(Dog(\"Rex\", \"collie\").name)\n```\nWhat happens, and why?",
+          "options": [
+            "Prints `Rex`, because `Dog` inherits `__init__` from `Animal`",
+            "`AttributeError`: `Dog.__init__` replaced `Animal.__init__` and never called it with `super().__init__(name)`",
+            "`TypeError`: `Dog` takes too many arguments",
+            "Prints `None`"
+          ],
+          "answer": 1,
+          "explanation": "Defining `__init__` in the child **overrides** the parent's, so `Animal.__init__` never runs and `self.name` is never set. Add `super().__init__(name)` at the start of `Dog.__init__` to run the parent's setup, then add the child's own attributes."
+        }
+      ]
+    },
+    {
+      "id": "type-hints",
+      "title": "Type hints",
+      "duration": "60 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/oop-and-clean-code/type-hints.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: typing",
+          "url": "https://docs.python.org/3/library/typing.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "oop-type-hints-fix",
+          "type": "code",
+          "title": "Add type hints and fix the bugs they reveal",
+          "prompt": {
+            "file": "practice/oop-type-hints-fix/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-type-hints-fix/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-type-hints-fix/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-type-hints-fix/solution.py"
+          }
+        },
+        {
+          "id": "oop-quiz-optional",
+          "type": "quiz",
+          "question": "What does the return type in `def find_user(name: str) -> Optional[User]:` mean?",
+          "options": [
+            "The function might return a `User`, or it might return `None`",
+            "The `name` argument is optional",
+            "The function may or may not be called",
+            "The function returns a list of users"
+          ],
+          "answer": 0,
+          "explanation": "`Optional[User]` is the older spelling of `User | None`: the result might be `None`. It says nothing about optional arguments. Callers must check `if user is not None:` before using it, and a type checker will remind them if they don't."
+        },
+        {
+          "id": "oop-quiz-runtime-types",
+          "type": "quiz",
+          "question": "```python\ndef double(n: int) -> int:\n    return n * 2\n\nprint(double(\"ha\"))\n```\nWhat happens when you run this with plain `python`?",
+          "options": [
+            "`TypeError: n must be int`",
+            "It prints `haha`",
+            "It prints `None`",
+            "Python refuses to start because of the wrong type"
+          ],
+          "answer": 1,
+          "explanation": "Python **doesn't enforce type hints at runtime**. `\"ha\" * 2` is valid, so it prints `haha`. A type checker such as mypy or pyright would flag the call before you run it. If you need a check at runtime (for user input, say), write it yourself with `if` and `raise`."
+        }
+      ]
+    },
+    {
+      "id": "readable-code",
+      "title": "Readable code",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "XBiLUNx84CQ",
+          "title": "Missing Semester: Lecture 9, Code Quality"
+        },
+        {
+          "youtube": "LrtnLEkOwFE",
+          "title": "ArjanCodes: 7 Python Mistakes That Instantly Expose Junior Developers"
+        }
+      ],
+      "body": {
+        "file": "lessons/oop-and-clean-code/readable-code.md"
+      },
+      "resources": [
+        {
+          "title": "PEP 8: Style Guide for Python Code",
+          "url": "https://peps.python.org/pep-0008/"
+        },
+        {
+          "title": "PEP 20: The Zen of Python",
+          "url": "https://peps.python.org/pep-0020/"
+        },
+        {
+          "title": "Ruff documentation",
+          "url": "https://docs.astral.sh/ruff/"
+        },
+        {
+          "title": "Missing Semester: Code quality",
+          "url": "https://missing.csail.mit.edu/2026/code-quality/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "oop-refactor-receipt",
+          "type": "code",
+          "title": "Refactor a messy function into pure helpers",
+          "prompt": {
+            "file": "practice/oop-refactor-receipt/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-refactor-receipt/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-refactor-receipt/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-refactor-receipt/solution.py"
+          }
+        },
+        {
+          "id": "oop-quiz-naming",
+          "type": "quiz",
+          "question": "Which name is the best choice for a variable holding how long to wait for a server before giving up?",
+          "options": [
+            "`t`",
+            "`timeout`",
+            "`timeout_seconds`",
+            "`data`"
+          ],
+          "answer": 2,
+          "explanation": "`timeout_seconds` says what it is **and the unit**. A bare `timeout` invites someone to assume milliseconds, a real source of production bugs. One-letter names are fine only in tiny scopes, and `data` describes nothing."
+        },
+        {
+          "id": "oop-quiz-comments",
+          "type": "quiz",
+          "question": "Which comment is the most useful?",
+          "options": [
+            "`total += 1  # add one to total`",
+            "`# loop over the users`",
+            "`# The payments API counts days from 1, not 0, so shift the index.`",
+            "`# TODO`"
+          ],
+          "answer": 2,
+          "explanation": "Good comments explain **why**, which the code can't say: here, an outside quirk that a reader would otherwise \"fix\". Comments that restate what the code does are noise that goes stale; a bare `TODO` gives nobody anything to act on."
+        }
+      ]
+    },
+    {
+      "id": "code-smells-and-refactoring",
+      "title": "Code smells and refactoring",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/oop-and-clean-code/code-smells-and-refactoring.md"
+      },
+      "resources": [
+        {
+          "title": "Refactoring.com: Catalog of refactorings",
+          "url": "https://refactoring.com/catalog/"
+        },
+        {
+          "title": "Martin Fowler: Code Smell",
+          "url": "https://martinfowler.com/bliki/CodeSmell.html"
+        },
+        {
+          "title": "Martin Fowler: Technical Debt",
+          "url": "https://martinfowler.com/bliki/TechnicalDebt.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "oop-inventory-kata",
+          "type": "code",
+          "title": "The bakery stock kata: add a feature to tangled code",
+          "prompt": {
+            "file": "practice/oop-inventory-kata/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-inventory-kata/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-inventory-kata/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-inventory-kata/solution.py"
+          }
+        },
+        {
+          "id": "oop-shipping-lookup",
+          "type": "code",
+          "title": "Replace a long if/elif with a lookup table",
+          "prompt": {
+            "file": "practice/oop-shipping-lookup/prompt.md"
+          },
+          "starter": {
+            "file": "practice/oop-shipping-lookup/starter.py"
+          },
+          "tests": {
+            "file": "practice/oop-shipping-lookup/tests.py"
+          },
+          "solution": {
+            "file": "practice/oop-shipping-lookup/solution.py"
+          }
+        },
+        {
+          "id": "oop-quiz-smell-feature-envy",
+          "type": "quiz",
+          "question": "```python\ndef shipping_label(order):\n    c = order.customer\n    return f\"{c.name}\\n{c.street}\\n{c.city} {c.postcode}\"\n```\nWhich smell is this?",
+          "options": [
+            "Long parameter list",
+            "Feature envy",
+            "Duplicated code",
+            "Magic number"
+          ],
+          "answer": 1,
+          "explanation": "Every line reaches into `customer`'s data: the function is more interested in another object than its own. That's **feature envy**. The usual refactoring is *move function*: make it a method on the customer, such as `customer.mailing_address()`."
+        },
+        {
+          "id": "oop-quiz-smell-primitive",
+          "type": "quiz",
+          "question": "A codebase stores prices as floats like `12.5`, currencies as free-text strings, and checks `if \"@\" in email` in a dozen places. Which smell is this, and what's the usual fix?",
+          "options": [
+            "Long function: split it into smaller functions",
+            "Primitive obsession: introduce small types such as a `Money` dataclass and an `Email` class that validates once",
+            "Feature envy: move the functions to another class",
+            "Technical debt: rewrite the whole system"
+          ],
+          "answer": 1,
+          "explanation": "**Primitive obsession** means using raw strings, ints and floats for ideas that deserve their own type. Small types like `Money(amount_cents, currency)` or an `Email` that validates in its constructor put the rules in one place and make mistakes like adding USD to EUR impossible."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "oop-project",
+    "title": "Library system",
+    "brief": {
+      "file": "projects/oop-and-clean-code.md"
+    },
+    "checklist": [
+      "Dataclasses and enums for `Book`, `Member` and `Loan`",
+      "Business rules: loan limits, due dates (with an injected clock) and late fees",
+      "Composition over inheritance; one `Protocol` for notifications with two implementations",
+      "Type hints everywhere, and mypy or pyright passes with no errors",
+      "Ruff format and ruff check pass; no function over 25 lines; no magic numbers",
+      "Rule-breaking raises clear exceptions with readable messages",
+      "A `demo.py` that runs a scripted scenario",
+      "README with a design notes section explaining two decisions"
+    ],
+    "links": true
+  }
+}

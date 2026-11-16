@@ -21,8 +21,9 @@ The platform knows nothing about any subject. Every course is a **course pack**:
 
 ```
 courses/
-├── ai-engineering/     ← included, free: Python → shipping LLM products in 3 months
-└── your-course/        ← write your own: docs/writing-packs.md
+├── ai-engineering/        ← included, free: Python → shipping LLM products in 3 months
+├── software-engineering/  ← included, free: zero → job-ready junior engineer
+└── your-course/           ← write your own: docs/writing-packs.md
 ```
 
 ---
@@ -46,7 +47,7 @@ courses/
 
 Open **[theolodocoder.github.io/learnpack](https://theolodocoder.github.io/learnpack/)**. It's the same app: lessons, notes, quizzes, the focus timer, and exercises that run Python ([Pyodide](https://pyodide.org)) or TypeScript right in your browser. Your progress stays in that browser; use **Back up** on a course page to save it to a file.
 
-The web version runs every AI Engineering exercise (one asyncio timeout test can occasionally fail in browsers; Check again). Things that need a real computer, such as calling an AI API with your own key or exact Node event-loop behaviour, need the download below. Some sites refuse to be shown inside another page; those links open in a new tab.
+The web version runs every exercise in both included courses (one AI Engineering asyncio timeout test can occasionally fail in browsers; Check again). Things that need a real computer, such as calling an AI API with your own key or exact Node event-loop behaviour, need the download below. Some sites refuse to be shown inside another page; those links open in a new tab.
 
 After your first visit it works offline: the app, the courses, and Python with any packages an exercise has used are cached in your browser. Updates arrive on your next visit after a release.
 
@@ -106,6 +107,13 @@ From rusty Python to shipping LLM-powered products in about 3 months: Python for
 That's 53 lessons and 89 exercises. The exercises that call Claude are checked against a fake client, so **Check** is always free and offline. Add an API key to try them for real with **Run**.
 
 Every video and link was checked to exist before release. Every exercise's reference solution passes its own tests, and CI re-checks this on every change.
+
+### Software Engineering: Zero to Job-Ready
+*`courses/software-engineering/`: Python exercises*
+
+From never having programmed to a hireable junior software engineer: how computers and the terminal work, Python, debugging, Git and GitHub, clean code, testing, data structures and algorithms, SQL, HTTP and building APIs, shipping software, working on a team, and interviews.
+
+That's 66 lessons, 122 exercises with hidden tests, 138 quizzes and a project for every section. Every exercise uses only Python's standard library (plus FastAPI in the web section), so all of them also run in the web version.
 
 More course packs will be available separately. Any pack drops into `courses/` the same way.
 

@@ -1,0 +1,420 @@
+{
+  "id": "databases-and-sql",
+  "title": "Databases and SQL",
+  "summary": "Store data safely and ask it questions: tables, keys and constraints, SELECT and GROUP BY, joins, transactions and indexes, and SQL from Python without injection. Project: a SQLite-backed expense tracker.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "why-databases",
+      "title": "Why databases",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "oqRU2So6Z2Y",
+          "title": "CS50x - Lecture 7 - SQL"
+        },
+        {
+          "youtube": "zsjvFFKOm3c",
+          "title": "SQL Explained in 100 Seconds (Fireship)"
+        }
+      ],
+      "body": {
+        "file": "lessons/databases-and-sql/why-databases.md"
+      },
+      "resources": [
+        {
+          "title": "CS50's Introduction to Databases with SQL",
+          "url": "https://cs50.harvard.edu/sql/"
+        },
+        {
+          "title": "SQLite: SQL as understood by SQLite",
+          "url": "https://www.sqlite.org/lang.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "sql-books-schema",
+          "type": "code",
+          "title": "Design a books table with rules",
+          "prompt": {
+            "file": "practice/sql-books-schema/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-books-schema/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-books-schema/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-books-schema/solution.py"
+          }
+        },
+        {
+          "id": "sql-quiz-primary-key",
+          "type": "quiz",
+          "question": "A `users` table has `id INTEGER PRIMARY KEY`. What does the primary key guarantee?",
+          "options": [
+            "Rows are always returned sorted by `id`",
+            "Every row has an `id`, and no two rows share the same `id`",
+            "The `id` can never be changed or deleted",
+            "Other tables are automatically linked to `users`"
+          ],
+          "answer": 1,
+          "explanation": "A **primary key** is unique and never empty, so it identifies exactly one row. It says nothing about the order rows come back in (use `ORDER BY` for that), and links from other tables need foreign keys, which come later in the section."
+        },
+        {
+          "id": "sql-quiz-json-fine",
+          "type": "quiz",
+          "question": "In which situation is a plain JSON file a perfectly good choice instead of a database?",
+          "options": [
+            "A web shop where many customers place orders at the same time",
+            "An app's settings file that one program reads at start-up and saves occasionally",
+            "Ten million sensor readings you need to filter by date range",
+            "Bank balances that must never be half-updated after a crash"
+          ],
+          "answer": 1,
+          "explanation": "Small data used by one program at a time is fine in a file. Databases earn their keep with **many users at once** (concurrency), **large data you query** (only reading what you need), and **data that must stay correct** (constraints and transactions)."
+        }
+      ]
+    },
+    {
+      "id": "querying-with-select",
+      "title": "Querying with SELECT",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "vHYeChEf2lA",
+          "title": "CS50 SQL - Lecture 0 - Querying"
+        },
+        {
+          "youtube": "HXV3zeQKqGY",
+          "title": "SQL Tutorial - Full Database Course for Beginners (freeCodeCamp)"
+        }
+      ],
+      "body": {
+        "file": "lessons/databases-and-sql/querying-with-select.md"
+      },
+      "resources": [
+        {
+          "title": "SQLite: the SELECT statement",
+          "url": "https://www.sqlite.org/lang_select.html"
+        },
+        {
+          "title": "SQLBolt: interactive SQL lessons",
+          "url": "https://sqlbolt.com/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "sql-film-queries",
+          "type": "code",
+          "title": "Five questions for a films table",
+          "prompt": {
+            "file": "practice/sql-film-queries/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-film-queries/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-film-queries/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-film-queries/solution.py"
+          }
+        },
+        {
+          "id": "sql-quiz-where-vs-having",
+          "type": "quiz",
+          "question": "You want genres whose **average rating** is above 7. Which query is correct?",
+          "options": [
+            "`SELECT genre FROM films WHERE AVG(rating) > 7 GROUP BY genre`",
+            "`SELECT genre FROM films GROUP BY genre HAVING AVG(rating) > 7`",
+            "`SELECT genre FROM films WHERE rating > 7 GROUP BY genre`",
+            "`SELECT genre, AVG(rating) > 7 FROM films`"
+          ],
+          "answer": 1,
+          "explanation": "`WHERE` filters individual **rows before** grouping, so it can't use aggregates like `AVG` (SQLite says `misuse of aggregate`). `HAVING` filters **groups after** `GROUP BY`. Option 3 runs, but answers a different question: genres that have *at least one* film rated above 7."
+        },
+        {
+          "id": "sql-quiz-null-equals",
+          "type": "quiz",
+          "question": "`SELECT title FROM films WHERE rating = NULL` returns no rows, even though some films have no rating. Why?",
+          "options": [
+            "`NULL` must be written in lower case",
+            "Comparing anything with `NULL` using `=` gives *unknown*, not true, so `WHERE` drops every row; use `IS NULL`",
+            "SQLite deletes rows whose rating is `NULL`",
+            "You need `LIKE NULL` for missing values"
+          ],
+          "answer": 1,
+          "explanation": "`NULL` means *unknown*. \"Is this unknown value equal to unknown?\" is itself unknown, and `WHERE` only keeps rows where the condition is **true**. Use `IS NULL` / `IS NOT NULL`. There's no error, which is what makes this mistake sneaky."
+        }
+      ]
+    },
+    {
+      "id": "relationships-and-joins",
+      "title": "Relationships and joins",
+      "duration": "90 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/databases-and-sql/relationships-and-joins.md"
+      },
+      "resources": [
+        {
+          "title": "SQLite: foreign key support",
+          "url": "https://www.sqlite.org/foreignkeys.html"
+        },
+        {
+          "title": "CS50's Introduction to Databases with SQL",
+          "url": "https://cs50.harvard.edu/sql/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "sql-library-queries",
+          "type": "code",
+          "title": "Library reports with joins",
+          "prompt": {
+            "file": "practice/sql-library-queries/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-library-queries/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-library-queries/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-library-queries/solution.py"
+          }
+        },
+        {
+          "id": "sql-library-schema",
+          "type": "code",
+          "title": "A library schema with foreign keys",
+          "prompt": {
+            "file": "practice/sql-library-schema/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-library-schema/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-library-schema/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-library-schema/solution.py"
+          }
+        },
+        {
+          "id": "sql-quiz-join-counts",
+          "type": "quiz",
+          "question": "`authors` has 3 rows. `books` has 4 rows, all written by the first 2 authors; the third author has no books. How many rows does each query return?\n\n```sql\nSELECT * FROM authors a JOIN books b ON b.author_id = a.id;       -- query 1\nSELECT * FROM authors a LEFT JOIN books b ON b.author_id = a.id;  -- query 2\n```",
+          "options": [
+            "3 and 4",
+            "4 and 4",
+            "4 and 5",
+            "12 and 12"
+          ],
+          "answer": 2,
+          "explanation": "An **inner** `JOIN` keeps only matched pairs: one row per book, so 4. A `LEFT JOIN` keeps every author, adding one row with `NULL` book columns for the author with no books: 4 + 1 = 5. Twelve would be every author paired with every book, which is what you get when you forget the `ON` condition."
+        },
+        {
+          "id": "sql-quiz-foreign-key-side",
+          "type": "quiz",
+          "question": "A customer can place many orders; each order belongs to one customer. Where does the foreign key go?",
+          "options": [
+            "A `customer_id` column in `orders`",
+            "An `order_ids` column in `customers` holding a list of ids",
+            "A `customer_id` column in both tables",
+            "A separate join table is required"
+          ],
+          "answer": 0,
+          "explanation": "In a **one-to-many** relationship the foreign key goes on the **many** side: each order stores the one customer it belongs to. A column holds one value, so a list of order ids in `customers` breaks the rules. Join tables are for **many-to-many** relationships."
+        }
+      ]
+    },
+    {
+      "id": "changing-data-schema-design-and-indexes",
+      "title": "Changing data, schema design and indexes",
+      "duration": "90 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/databases-and-sql/changing-data-schema-design-and-indexes.md"
+      },
+      "resources": [
+        {
+          "title": "SQLite: the query planner",
+          "url": "https://www.sqlite.org/queryplanner.html"
+        },
+        {
+          "title": "SQLite: SQL as understood by SQLite",
+          "url": "https://www.sqlite.org/lang.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "sql-atomic-transfer",
+          "type": "code",
+          "title": "An all-or-nothing money transfer",
+          "prompt": {
+            "file": "practice/sql-atomic-transfer/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-atomic-transfer/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-atomic-transfer/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-atomic-transfer/solution.py"
+          }
+        },
+        {
+          "id": "sql-uses-index",
+          "type": "code",
+          "title": "Does this query use an index?",
+          "prompt": {
+            "file": "practice/sql-uses-index/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-uses-index/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-uses-index/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-uses-index/solution.py"
+          }
+        },
+        {
+          "id": "sql-quiz-normalization",
+          "type": "quiz",
+          "question": "What's the main design problem with this table?\n\n```\norders(id, customer_name, customer_email, customer_phone, product, quantity)\n```",
+          "options": [
+            "It has too many columns to be fast",
+            "The customer's details are repeated in every order, so they can drift out of sync; they belong in a `customers` table linked by `customer_id`",
+            "`quantity` should be stored as text",
+            "Orders shouldn't have an `id`"
+          ],
+          "answer": 1,
+          "explanation": "**One fact, one place.** If Ada places 20 orders, her email is stored 20 times, and an update to one row leaves the others wrong. Move customers to their own table and store only `customer_id` in `orders`."
+        },
+        {
+          "id": "sql-quiz-transaction-error",
+          "type": "quiz",
+          "question": "Inside `with conn:`, the first `UPDATE` succeeds and the second raises `sqlite3.IntegrityError`. What happens to the first update?",
+          "options": [
+            "It's kept, because it already succeeded",
+            "It's rolled back along with everything else in the block, and the exception continues",
+            "It's committed, and the error is silently ignored",
+            "The database file is left corrupted"
+          ],
+          "answer": 1,
+          "explanation": "A transaction is **all or nothing**. When an exception leaves the `with conn:` block, Python calls `conn.rollback()`, which undoes every change made in the block, then lets the exception carry on so your code can report it."
+        }
+      ]
+    },
+    {
+      "id": "sql-from-python-safely",
+      "title": "SQL from Python, safely",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "pd-0G0MigUA",
+          "title": "Python SQLite Tutorial: Complete Overview (Corey Schafer)"
+        }
+      ],
+      "body": {
+        "file": "lessons/databases-and-sql/sql-from-python-safely.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: sqlite3",
+          "url": "https://docs.python.org/3/library/sqlite3.html"
+        },
+        {
+          "title": "OWASP: SQL Injection Prevention Cheat Sheet",
+          "url": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "sql-task-repository",
+          "type": "code",
+          "title": "A task repository",
+          "prompt": {
+            "file": "practice/sql-task-repository/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-task-repository/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-task-repository/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-task-repository/solution.py"
+          }
+        },
+        {
+          "id": "sql-fix-injection",
+          "type": "code",
+          "title": "Fix the injectable queries",
+          "prompt": {
+            "file": "practice/sql-fix-injection/prompt.md"
+          },
+          "starter": {
+            "file": "practice/sql-fix-injection/starter.py"
+          },
+          "tests": {
+            "file": "practice/sql-fix-injection/tests.py"
+          },
+          "solution": {
+            "file": "practice/sql-fix-injection/solution.py"
+          }
+        },
+        {
+          "id": "sql-quiz-injectable",
+          "type": "quiz",
+          "question": "Which of these is safe from SQL injection? (`email` comes from a web form.)",
+          "options": [
+            "`conn.execute(f\"SELECT * FROM users WHERE email = '{email}'\")`",
+            "`conn.execute(\"SELECT * FROM users WHERE email = '\" + email + \"'\")`",
+            "`conn.execute(\"SELECT * FROM users WHERE email = ?\", (email,))`",
+            "`conn.execute(\"SELECT * FROM users WHERE email = '%s'\" % email)`"
+          ],
+          "answer": 2,
+          "explanation": "Only the `?` version keeps the value separate from the SQL. The other three all **paste the user's text into the SQL string** (f-string, `+` and `%` formatting are the same mistake), so input like `' OR '1'='1` becomes part of the query."
+        },
+        {
+          "id": "sql-quiz-why-params",
+          "type": "quiz",
+          "question": "Why do `?` parameters stop SQL injection?",
+          "options": [
+            "They escape every quote character in the value",
+            "The database parses the SQL first and receives the values separately, so a value can never be read as SQL",
+            "They reject any value containing SQL keywords",
+            "They encrypt the value before sending it"
+          ],
+          "answer": 1,
+          "explanation": "The SQL and the values travel separately. The database decides what the statement means **before** it sees the values, then treats each value purely as data. Nothing is escaped or filtered, which is why it's reliable: there's nothing for an attacker to slip past."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "sql-project",
+    "title": "Expense tracker with SQLite",
+    "brief": {
+      "file": "projects/databases-and-sql.md"
+    },
+    "checklist": [
+      "Normalised schema (users, categories, expenses) with foreign keys and NOT NULL/CHECK/UNIQUE constraints",
+      "PRAGMA foreign_keys = ON on every connection, with a test that proves a broken link is refused",
+      "A repository layer that returns dataclasses; parameterised queries only, and an injection test passes",
+      "Reports: monthly totals, top categories, and budget vs actual, using GROUP BY and JOIN",
+      "One index justified with EXPLAIN QUERY PLAN output before and after, pasted in the README",
+      "An atomic operation (a transfer between budgets or a CSV bulk import) that changes nothing on failure, with a test",
+      "Integration tests against :memory: SQLite, runnable with pytest",
+      "A README explaining the schema (an ASCII diagram is fine) and how to run the CLI"
+    ],
+    "links": true
+  }
+}

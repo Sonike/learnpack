@@ -1,0 +1,158 @@
+{
+  "id": "capstones",
+  "title": "Capstone projects",
+  "summary": "Pick one: ship a product a real person uses, or build one with a team of learners. Either way you finish with a live, tested, documented project you can extend in an interview.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "real-user-app",
+      "title": "Capstone A: A product someone actually uses",
+      "duration": "4–6 weeks",
+      "videos": [],
+      "body": {
+        "file": "lessons/capstones/real-user-app.md"
+      },
+      "resources": [
+        {
+          "title": "FastAPI tutorial",
+          "url": "https://fastapi.tiangolo.com/tutorial/"
+        },
+        {
+          "title": "GitHub Docs: About issues",
+          "url": "https://docs.github.com/en/issues/tracking-your-work-with-issues/learning-about-issues/about-issues"
+        },
+        {
+          "title": "GitHub Docs: Building and testing Python",
+          "url": "https://docs.github.com/en/actions/tutorials/build-and-test-code/python"
+        },
+        {
+          "title": "Render: Deploy a FastAPI app",
+          "url": "https://render.com/docs/deploy-fastapi"
+        },
+        {
+          "title": "Make a README",
+          "url": "https://www.makeareadme.com/"
+        },
+        {
+          "title": "Felix Rieseberg: Hunger beats tenure",
+          "url": "https://felixrieseberg.com/hunger-beats-tenure-advice-for-junior-engineers/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "cap-quiz-real-user",
+          "type": "quiz",
+          "question": "Why does Capstone A insist on a **real** user rather than an imagined one?",
+          "options": [
+            "Real users make the app harder to build, which impresses interviewers",
+            "Their feedback shows you can turn a fuzzy need into working software, and it reshapes what you build",
+            "Hosting platforms only allow apps with real users",
+            "It means you can skip writing tests"
+          ],
+          "answer": 1,
+          "explanation": "The core junior skill is turning a real, fuzzy need into software someone uses. A real user's first five minutes reveal problems no imagined user would, and their quote in the README is evidence a hiring manager can't get from a tutorial project."
+        },
+        {
+          "id": "cap-quiz-live-extension",
+          "type": "quiz",
+          "question": "In an interview, you're asked to add a small feature to your capstone in 30 minutes. What's the best first move?",
+          "options": [
+            "Start typing the feature straight away to save time",
+            "Ask an AI assistant to write it while you explain",
+            "Restate the request, ask a clarifying question, then write a failing test",
+            "Explain that the project is finished and can't be changed"
+          ],
+          "answer": 2,
+          "explanation": "Clarifying first avoids building the wrong thing, and a failing test gives you a clear finish line and shows your process out loud. This is the drill the capstone asks you to practise at least twice."
+        }
+      ]
+    },
+    {
+      "id": "team-project",
+      "title": "Capstone B: Build with a team",
+      "duration": "5–6 weeks",
+      "videos": [],
+      "body": {
+        "file": "lessons/capstones/team-project.md"
+      },
+      "resources": [
+        {
+          "title": "Atlassian: User stories",
+          "url": "https://www.atlassian.com/agile/project-management/user-stories"
+        },
+        {
+          "title": "Atlassian: Scrum",
+          "url": "https://www.atlassian.com/agile/scrum"
+        },
+        {
+          "title": "Atlassian: Feature branch workflow",
+          "url": "https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow"
+        },
+        {
+          "title": "GitHub Docs: About pull requests",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+        },
+        {
+          "title": "Google: Small CLs",
+          "url": "https://google.github.io/eng-practices/review/developer/small-cls.html"
+        },
+        {
+          "title": "Missing Semester: Beyond the Code",
+          "url": "https://missing.csail.mit.edu/2026/beyond-code/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "cap-quiz-walking-skeleton",
+          "type": "quiz",
+          "question": "Why does the team build a deployed \"walking skeleton\" (one table, one endpoint, one test, CI, live URL) in week 2?",
+          "options": [
+            "To have something to show in the demo video",
+            "So integration and deployment problems show up early, while they're small, instead of in a big-bang merge at the end",
+            "Because hosting platforms require a deploy within two weeks",
+            "To decide who is the strongest coder"
+          ],
+          "answer": 1,
+          "explanation": "A thin slice through every layer forces the team to agree on structure and proves the whole pipeline works. Every later feature plugs into something that already runs, so integration happens daily instead of all at once at the end."
+        },
+        {
+          "id": "cap-quiz-retro",
+          "type": "quiz",
+          "question": "Which retro note is most useful?",
+          "options": [
+            "\"Communication could be better.\"",
+            "\"Sam was slow.\"",
+            "\"PRs waited about two days for review. We agreed to review open PRs before starting new work; wait time fell to under a day.\"",
+            "\"Everything went well.\""
+          ],
+          "answer": 2,
+          "explanation": "A good retro item names a **specific, observable problem**, the change you tried, and what happened. It's blameless (about the process, not a person) and gives you a true, detailed STAR story for interviews."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "cap-project",
+    "title": "Ship your capstone",
+    "brief": {
+      "file": "projects/capstones.md"
+    },
+    "checklist": [
+      "Solves a real problem for a real person or group; their feedback is quoted in the README (Capstone A) — or built with 2–4 other learners (Capstone B)",
+      "FastAPI backend plus SQLite or Postgres; a simple frontend is optional",
+      "Issues and PRs for every feature; a public project board",
+      "Tests (unit plus integration) in CI; coverage reported",
+      "Deployed, with logging and a health check",
+      "Auth and authorisation with tests for the \"other user's data\" cases",
+      "A design doc and two ADR-style decision notes",
+      "A 3-minute demo video and a write-up of what you'd do next",
+      "You can add a small feature live in 30 minutes (practised at least twice)",
+      "Team only: shared repo with branch protection, required reviews and CI",
+      "Team only: a backlog of user stories with acceptance criteria, estimated and split",
+      "Team only: every member has merged PRs and reviewed others' PRs (links in README)",
+      "Team only: a retro document: what went well, what didn't, what you changed",
+      "Team only: each member writes a STAR story from the project"
+    ],
+    "links": true
+  }
+}

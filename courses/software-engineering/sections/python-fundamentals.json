@@ -1,0 +1,749 @@
+{
+  "id": "python-fundamentals",
+  "title": "Programming fundamentals in Python",
+  "summary": "Values and types, decisions, loops, functions, lists, dicts, sets and strings: the core of Python, practised with small, tested exercises. Project: a terminal game built only from functions and data.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "values-variables-and-types",
+      "title": "Values, variables and types",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "JP7ITIXGpHk",
+          "title": "CS50P, Lecture 0: Functions, Variables"
+        },
+        {
+          "youtube": "nLRL_NcnK-4",
+          "title": "CS50P full course on freeCodeCamp (the whole course in one video)"
+        }
+      ],
+      "body": {
+        "file": "lessons/python-fundamentals/values-variables-and-types.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: An informal introduction to Python",
+          "url": "https://docs.python.org/3/tutorial/introduction.html"
+        },
+        {
+          "title": "CS50's Introduction to Programming with Python",
+          "url": "https://cs50.harvard.edu/python/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-temperature",
+          "type": "code",
+          "title": "Convert and format temperatures",
+          "prompt": {
+            "file": "practice/py-temperature/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-temperature/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-temperature/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-temperature/solution.py"
+          }
+        },
+        {
+          "id": "py-split-bill",
+          "type": "code",
+          "title": "Split the bill",
+          "prompt": {
+            "file": "practice/py-split-bill/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-split-bill/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-split-bill/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-split-bill/solution.py"
+          }
+        },
+        {
+          "id": "py-seconds-to-hms",
+          "type": "code",
+          "title": "Seconds to hours, minutes and seconds",
+          "prompt": {
+            "file": "practice/py-seconds-to-hms/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-seconds-to-hms/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-seconds-to-hms/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-seconds-to-hms/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-result-types",
+          "type": "quiz",
+          "question": "What do `7 / 2`, `7 // 2` and `\"3\" + \"4\"` evaluate to?",
+          "options": [
+            "`3`, `3` and `7`",
+            "`3.5`, `3` and `\"34\"`",
+            "`3.5`, `3.5` and `7`",
+            "`3.5`, `3` and an error"
+          ],
+          "answer": 1,
+          "explanation": "`/` is true division and **always returns a float** (`3.5`). `//` is floor division and gives a whole number (`3`). `+` on two **strings** joins them, giving `\"34\"`. That's the classic `input()` bug: convert with `int()` before adding."
+        },
+        {
+          "id": "py-quiz-float-imprecision",
+          "type": "quiz",
+          "question": "Why does `0.1 + 0.2 == 0.3` evaluate to `False` in Python?",
+          "options": [
+            "Python rounds every float to one decimal place",
+            "0.1 and 0.2 can't be stored exactly in binary, so their sum is very slightly off from 0.3",
+            "`==` can't compare floats; it only works on ints",
+            "It's a bug in Python that other languages don't have"
+          ],
+          "answer": 1,
+          "explanation": "Floats are stored in binary, and 0.1 has no exact binary form (just as 1/3 has no exact decimal form). The sum is `0.30000000000000004`. Almost every language behaves the same. Compare with `math.isclose`, format for display, and use whole cents or `decimal` for money."
+        }
+      ]
+    },
+    {
+      "id": "conditionals-and-boolean-logic",
+      "title": "Conditionals and boolean logic",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "_b6NgY_pMdw",
+          "title": "CS50P, Lecture 1: Conditionals"
+        }
+      ],
+      "body": {
+        "file": "lessons/python-fundamentals/conditionals-and-boolean-logic.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: More control flow tools",
+          "url": "https://docs.python.org/3/tutorial/controlflow.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-leap-year",
+          "type": "code",
+          "title": "Is it a leap year?",
+          "prompt": {
+            "file": "practice/py-leap-year/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-leap-year/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-leap-year/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-leap-year/solution.py"
+          }
+        },
+        {
+          "id": "py-grade",
+          "type": "code",
+          "title": "Turn a score into a grade",
+          "prompt": {
+            "file": "practice/py-grade/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-grade/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-grade/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-grade/solution.py"
+          }
+        },
+        {
+          "id": "py-fizzbuzz",
+          "type": "code",
+          "title": "FizzBuzz",
+          "prompt": {
+            "file": "practice/py-fizzbuzz/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-fizzbuzz/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-fizzbuzz/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-fizzbuzz/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-or-trap",
+          "type": "quiz",
+          "question": "`colour = \"green\"`. What does `colour == \"red\" or \"blue\"` evaluate to?",
+          "options": [
+            "`False`",
+            "`True`",
+            "`\"blue\"`",
+            "A `SyntaxError`"
+          ],
+          "answer": 2,
+          "explanation": "Python reads it as `(colour == \"red\") or \"blue\"`. The left side is `False`, so `or` returns the right side, `\"blue\"`, which is **truthy**, so an `if` on it would always run. Write `colour == \"red\" or colour == \"blue\"`, or `colour in (\"red\", \"blue\")`."
+        },
+        {
+          "id": "py-quiz-truthiness",
+          "type": "quiz",
+          "question": "Which of these values is **truthy**?",
+          "options": [
+            "`[]`",
+            "`0`",
+            "`None`",
+            "`\"0\"`"
+          ],
+          "answer": 3,
+          "explanation": "Empty collections, zero and `None` are falsy. `\"0\"` is a string with one character in it, so it's **non-empty and truthy**, even though it looks like zero. Convert with `int()` if you mean the number."
+        }
+      ]
+    },
+    {
+      "id": "loops",
+      "title": "Loops",
+      "duration": "60 min",
+      "videos": [
+        {
+          "youtube": "-7xg8pGcP6w",
+          "title": "CS50P, Lecture 2: Loops"
+        }
+      ],
+      "body": {
+        "file": "lessons/python-fundamentals/loops.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: More control flow tools",
+          "url": "https://docs.python.org/3/tutorial/controlflow.html"
+        },
+        {
+          "title": "Python Tutor: watch code run step by step",
+          "url": "https://pythontutor.com/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-digits-vowels",
+          "type": "code",
+          "title": "Sum the digits, count the vowels",
+          "prompt": {
+            "file": "practice/py-digits-vowels/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-digits-vowels/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-digits-vowels/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-digits-vowels/solution.py"
+          }
+        },
+        {
+          "id": "py-collatz",
+          "type": "code",
+          "title": "Collatz steps",
+          "prompt": {
+            "file": "practice/py-collatz/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-collatz/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-collatz/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-collatz/solution.py"
+          }
+        },
+        {
+          "id": "py-is-prime",
+          "type": "code",
+          "title": "Is it prime?",
+          "prompt": {
+            "file": "practice/py-is-prime/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-is-prime/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-is-prime/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-is-prime/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-range-count",
+          "type": "quiz",
+          "question": "How many times does the body of `for i in range(2, 10, 3):` run?",
+          "options": [
+            "2",
+            "3",
+            "4",
+            "8"
+          ],
+          "answer": 1,
+          "explanation": "`range(2, 10, 3)` starts at 2 and steps by 3, stopping **before** 10: `2, 5, 8`. That's **3** passes. Check with `list(range(2, 10, 3))`."
+        },
+        {
+          "id": "py-quiz-off-by-one",
+          "type": "quiz",
+          "question": "This should print the sum of 1 to 10 (55) but prints 45. What's wrong?\n\n```python\ntotal = 0\nfor n in range(1, 10):\n    total += n\nprint(total)\n```",
+          "options": [
+            "`total` should start at 1",
+            "`range(1, 10)` stops at 9; it should be `range(1, 11)`",
+            "`total += n` should be `total = n`",
+            "The loop should be a `while` loop"
+          ],
+          "answer": 1,
+          "explanation": "An **off-by-one error**: `range`'s stop value is never included, so 10 is never added (55 − 10 = 45). To include `n`, write `range(1, n + 1)`. Testing the boundary values by hand catches these."
+        }
+      ]
+    },
+    {
+      "id": "functions",
+      "title": "Functions",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "JP7ITIXGpHk",
+          "title": "CS50P, Lecture 0: Functions, Variables (the second half covers functions)"
+        }
+      ],
+      "body": {
+        "file": "lessons/python-fundamentals/functions.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Defining functions",
+          "url": "https://docs.python.org/3/tutorial/controlflow.html#defining-functions"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-bmi",
+          "type": "code",
+          "title": "BMI: small functions that work together",
+          "prompt": {
+            "file": "practice/py-bmi/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-bmi/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-bmi/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-bmi/solution.py"
+          }
+        },
+        {
+          "id": "py-make-greeting",
+          "type": "code",
+          "title": "Keyword-only arguments",
+          "prompt": {
+            "file": "practice/py-make-greeting/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-make-greeting/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-make-greeting/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-make-greeting/solution.py"
+          }
+        },
+        {
+          "id": "py-return-not-print",
+          "type": "code",
+          "title": "Return, don't print",
+          "prompt": {
+            "file": "practice/py-return-not-print/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-return-not-print/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-return-not-print/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-return-not-print/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-no-return",
+          "type": "quiz",
+          "question": "```python\ndef add(a, b):\n    print(a + b)\n\nx = add(2, 3)\nprint(x)\n```\n\nWhat does this print?",
+          "options": [
+            "`5` then `5`",
+            "`5` then `None`",
+            "`None` then `5`",
+            "Only `5`"
+          ],
+          "answer": 1,
+          "explanation": "Calling `add` **prints** `5`, but the function has no `return`, so it gives back **`None`**, and `x` is `None`. Functions that compute something should `return` it so the caller can use it."
+        },
+        {
+          "id": "py-quiz-scope",
+          "type": "quiz",
+          "question": "```python\ncount = 0\n\ndef bump():\n    count = 5\n    return count\n\nbump()\nprint(count)\n```\n\nWhat does this print?",
+          "options": [
+            "`0`",
+            "`5`",
+            "`None`",
+            "An `UnboundLocalError`"
+          ],
+          "answer": 0,
+          "explanation": "Assigning `count = 5` **inside** the function creates a new **local** variable. The global `count` is untouched, so it's still `0`. To get a value out of a function, return it and assign the result: `count = bump()`."
+        }
+      ]
+    },
+    {
+      "id": "lists-and-tuples",
+      "title": "Lists and tuples",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/python-fundamentals/lists-and-tuples.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Data structures",
+          "url": "https://docs.python.org/3/tutorial/datastructures.html"
+        },
+        {
+          "title": "Python Tutor: watch code run step by step",
+          "url": "https://pythontutor.com/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-second-largest",
+          "type": "code",
+          "title": "The second-largest number",
+          "prompt": {
+            "file": "practice/py-second-largest/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-second-largest/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-second-largest/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-second-largest/solution.py"
+          }
+        },
+        {
+          "id": "py-rotate",
+          "type": "code",
+          "title": "Rotate a list without changing it",
+          "prompt": {
+            "file": "practice/py-rotate/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-rotate/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-rotate/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-rotate/solution.py"
+          }
+        },
+        {
+          "id": "py-transpose",
+          "type": "code",
+          "title": "Transpose a grid",
+          "prompt": {
+            "file": "practice/py-transpose/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-transpose/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-transpose/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-transpose/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-aliasing",
+          "type": "quiz",
+          "question": "```python\na = [1, 2]\nb = a\nb.append(3)\nprint(a)\n```\n\nWhat does this print?",
+          "options": [
+            "`[1, 2]`",
+            "`[1, 2, 3]`",
+            "`[3]`",
+            "An error, because `a` and `b` can't share a list"
+          ],
+          "answer": 1,
+          "explanation": "`b = a` doesn't copy the list; it makes `b` a second name for the **same** list (**aliasing**). Appending through `b` changes the one list both names refer to. Use `b = a.copy()` for an independent copy."
+        },
+        {
+          "id": "py-quiz-slice",
+          "type": "quiz",
+          "question": "`letters = [\"a\", \"b\", \"c\", \"d\", \"e\"]`. What is `letters[1:3]`?",
+          "options": [
+            "`[\"a\", \"b\", \"c\"]`",
+            "`[\"b\", \"c\"]`",
+            "`[\"b\", \"c\", \"d\"]`",
+            "`[\"a\", \"b\"]`"
+          ],
+          "answer": 1,
+          "explanation": "A slice runs from `start` up to but **not including** `stop`: indexes 1 and 2, which are `\"b\"` and `\"c\"`. Indexes start at 0. The length of `items[i:j]` is `j - i`."
+        },
+        {
+          "id": "py-quiz-sort-vs-sorted",
+          "type": "quiz",
+          "question": "```python\nnums = [3, 1, 2]\nresult = nums.sort()\n```\n\nWhat are `result` and `nums` afterwards?",
+          "options": [
+            "`result` is `[1, 2, 3]` and `nums` is `[3, 1, 2]`",
+            "`result` is `None` and `nums` is `[1, 2, 3]`",
+            "Both are `[1, 2, 3]`",
+            "`result` is `None` and `nums` is `[3, 1, 2]`"
+          ],
+          "answer": 1,
+          "explanation": "`.sort()` sorts the list **in place** and returns `None`. `sorted(nums)` is the opposite: it returns a **new** sorted list and leaves `nums` alone. Never write `nums = nums.sort()`."
+        }
+      ]
+    },
+    {
+      "id": "dicts-and-sets",
+      "title": "Dicts and sets",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "Rl0ludWTLxs",
+          "title": "CS50x, Lecture 6: Python (dicts, sets and why lookups are fast)"
+        }
+      ],
+      "body": {
+        "file": "lessons/python-fundamentals/dicts-and-sets.md"
+      },
+      "resources": [
+        {
+          "title": "Python tutorial: Dictionaries",
+          "url": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries"
+        },
+        {
+          "title": "Python docs: Built-in types",
+          "url": "https://docs.python.org/3/library/stdtypes.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-word-counts",
+          "type": "code",
+          "title": "Count the words",
+          "prompt": {
+            "file": "practice/py-word-counts/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-word-counts/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-word-counts/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-word-counts/solution.py"
+          }
+        },
+        {
+          "id": "py-group-by-length",
+          "type": "code",
+          "title": "Group words by length",
+          "prompt": {
+            "file": "practice/py-group-by-length/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-group-by-length/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-group-by-length/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-group-by-length/solution.py"
+          }
+        },
+        {
+          "id": "py-sets",
+          "type": "code",
+          "title": "Sets: common friends and de-duplication",
+          "prompt": {
+            "file": "practice/py-sets/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-sets/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-sets/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-sets/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-dict-keys",
+          "type": "quiz",
+          "question": "Which of these **can't** be used as a dict key?",
+          "options": [
+            "`\"apple\"`",
+            "`42`",
+            "`(51.5, -0.1)`",
+            "`[\"a\", \"b\"]`"
+          ],
+          "answer": 3,
+          "explanation": "Keys must be **hashable**, which in practice means immutable. A list can change, so `{[\"a\", \"b\"]: 1}` raises `TypeError: unhashable type: 'list'`. Strings, numbers and tuples of immutable values are fine; convert a list to a tuple if you need it as a key."
+        },
+        {
+          "id": "py-quiz-set-ops",
+          "type": "quiz",
+          "question": "```python\na = {1, 2, 3}\nb = {2, 3, 4}\nprint(sorted(a - b), sorted(a & b))\n```\n\nWhat does this print?",
+          "options": [
+            "`[1] [2, 3]`",
+            "`[1, 4] [2, 3]`",
+            "`[4] [1, 2, 3, 4]`",
+            "`[1] [1, 2, 3, 4]`"
+          ],
+          "answer": 0,
+          "explanation": "`a - b` is the **difference**: items in `a` but not in `b`, so `{1}`. `a & b` is the **intersection**: items in both, `{2, 3}`. (`a | b` would be the union, and `a ^ b` the items in exactly one: `{1, 4}`.)"
+        }
+      ]
+    },
+    {
+      "id": "strings-and-text",
+      "title": "Strings and text",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "hy3sd9MOAcc",
+          "title": "CS50P, Lecture 7: Regular Expressions (optional, for the regex part)"
+        }
+      ],
+      "body": {
+        "file": "lessons/python-fundamentals/strings-and-text.md"
+      },
+      "resources": [
+        {
+          "title": "Python docs: String methods",
+          "url": "https://docs.python.org/3/library/stdtypes.html#string-methods"
+        },
+        {
+          "title": "Python docs: Regular Expression HOWTO",
+          "url": "https://docs.python.org/3/howto/regex.html"
+        }
+      ],
+      "practice": [
+        {
+          "id": "py-palindrome",
+          "type": "code",
+          "title": "Is it a palindrome?",
+          "prompt": {
+            "file": "practice/py-palindrome/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-palindrome/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-palindrome/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-palindrome/solution.py"
+          }
+        },
+        {
+          "id": "py-title-case",
+          "type": "code",
+          "title": "Title case, done properly",
+          "prompt": {
+            "file": "practice/py-title-case/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-title-case/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-title-case/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-title-case/solution.py"
+          }
+        },
+        {
+          "id": "py-email",
+          "type": "code",
+          "title": "A (deliberately simple) email check",
+          "prompt": {
+            "file": "practice/py-email/prompt.md"
+          },
+          "starter": {
+            "file": "practice/py-email/starter.py"
+          },
+          "tests": {
+            "file": "practice/py-email/tests.py"
+          },
+          "solution": {
+            "file": "practice/py-email/solution.py"
+          }
+        },
+        {
+          "id": "py-quiz-split-empty",
+          "type": "quiz",
+          "question": "What is `\"a,b,,c\".split(\",\")`?",
+          "options": [
+            "`[\"a\", \"b\", \"c\"]`",
+            "`[\"a\", \"b\", \"\", \"c\"]`",
+            "`[\"a\", \"b\", \",\", \"c\"]`",
+            "`[\"a,b,,c\"]`"
+          ],
+          "answer": 1,
+          "explanation": "With an explicit separator, `split` keeps the **empty piece** between the two commas. Only `split()` with no argument splits on runs of whitespace and drops empty pieces."
+        },
+        {
+          "id": "py-quiz-immutable",
+          "type": "quiz",
+          "question": "`s = \"hat\"`. Why does `s[0] = \"c\"` fail?",
+          "options": [
+            "Strings can't be indexed",
+            "Strings are immutable, so you can't change a character in place",
+            "You must use double quotes for single characters",
+            "Index 0 is out of range"
+          ],
+          "answer": 1,
+          "explanation": "Strings are **immutable**: `TypeError: 'str' object does not support item assignment`. Build a new string instead, e.g. `s = \"c\" + s[1:]`. That's also why every string method returns a new string."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "py-project",
+    "title": "A terminal game: text adventure or quiz",
+    "brief": {
+      "file": "projects/python-fundamentals.md"
+    },
+    "checklist": [
+      "Uses functions, loops, conditionals, lists and dicts (no classes yet)",
+      "Input validation: the game never crashes on bad input",
+      "At least 8 functions, each under 20 lines",
+      "Game data (rooms or questions) kept in a dict, separate from the logic",
+      "The score or final state is shown at the end",
+      "Someone else plays it, and you fix one thing they found confusing"
+    ],
+    "links": false
+  }
+}

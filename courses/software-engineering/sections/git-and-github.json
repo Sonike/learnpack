@@ -1,0 +1,393 @@
+{
+  "id": "git-and-github",
+  "title": "Git, GitHub and collaboration",
+  "summary": "Track your work with Git, branch and merge without fear, collaborate through GitHub pull requests, write good commits, undo mistakes safely, and work like a team with issues and CI. Project: a team Git exercise.",
+  "status": "ready",
+  "lessons": [
+    {
+      "id": "version-control-basics",
+      "title": "Version control basics",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "9K8lB61dl3Y",
+          "title": "Missing Semester 2026: Version control and Git"
+        },
+        {
+          "youtube": "HVsySz-h9r4",
+          "title": "Corey Schafer: Git tutorial for beginners, command-line fundamentals"
+        },
+        {
+          "youtube": "hwP7WQkmECE",
+          "title": "Fireship: Git explained in 100 seconds"
+        }
+      ],
+      "body": {
+        "file": "lessons/git-and-github/version-control-basics.md"
+      },
+      "resources": [
+        {
+          "title": "Pro Git: What is Git?",
+          "url": "https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F"
+        },
+        {
+          "title": "Missing Semester 2026: Version control",
+          "url": "https://missing.csail.mit.edu/2026/version-control/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "git-parse-status",
+          "type": "code",
+          "title": "Read `git status --porcelain`",
+          "prompt": {
+            "file": "practice/git-parse-status/prompt.md"
+          },
+          "starter": {
+            "file": "practice/git-parse-status/starter.py"
+          },
+          "tests": {
+            "file": "practice/git-parse-status/tests.py"
+          },
+          "solution": {
+            "file": "practice/git-parse-status/solution.py"
+          }
+        },
+        {
+          "id": "git-is-ignored",
+          "type": "code",
+          "title": "A simplified `.gitignore` matcher",
+          "prompt": {
+            "file": "practice/git-is-ignored/prompt.md"
+          },
+          "starter": {
+            "file": "practice/git-is-ignored/starter.py"
+          },
+          "tests": {
+            "file": "practice/git-is-ignored/tests.py"
+          },
+          "solution": {
+            "file": "practice/git-is-ignored/solution.py"
+          }
+        },
+        {
+          "id": "git-quiz-add-then-edit",
+          "type": "quiz",
+          "question": "You edit `app.py`, run `git add app.py`, then edit `app.py` again. `git status --short` shows `MM app.py`. What will `git commit` save?",
+          "options": [
+            "Your latest version of `app.py`",
+            "The version you staged with `git add`, without the second edit",
+            "Nothing, because the file has unstaged changes",
+            "Both versions, as two commits"
+          ],
+          "answer": 1,
+          "explanation": "A commit saves the **staging area**, not your working tree. The left `M` is the staged version; the right `M` means the file on disk has changed again since. Run `git add app.py` again to stage the newer version."
+        },
+        {
+          "id": "git-quiz-what-is-a-commit",
+          "type": "quiz",
+          "question": "What does a Git commit contain?",
+          "options": [
+            "Only the lines that changed since the last commit",
+            "A snapshot of the staged project, plus a message, author, date and a pointer to its parent commit",
+            "Every file on your disk, including untracked ones",
+            "A copy of the remote repository"
+          ],
+          "answer": 1,
+          "explanation": "A commit is a **snapshot** of the staged files (Git stores unchanged files efficiently, so they aren't duplicated) plus metadata, and a link to its parent. The parent links form the history. Untracked and ignored files are never included. `git diff` *computes* line changes by comparing snapshots."
+        }
+      ]
+    },
+    {
+      "id": "branches-and-merging",
+      "title": "Branches and merging",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "2sjqTHE0zok",
+          "title": "Missing Semester 2020: Version control (Git), the data model"
+        }
+      ],
+      "body": {
+        "file": "lessons/git-and-github/branches-and-merging.md"
+      },
+      "resources": [
+        {
+          "title": "Pro Git: Basic branching and merging",
+          "url": "https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging"
+        },
+        {
+          "title": "Learn Git Branching (interactive)",
+          "url": "https://learngitbranching.js.org/"
+        }
+      ],
+      "practice": [
+        {
+          "id": "git-resolve-conflict",
+          "type": "code",
+          "title": "Resolve merge conflicts in code",
+          "prompt": {
+            "file": "practice/git-resolve-conflict/prompt.md"
+          },
+          "starter": {
+            "file": "practice/git-resolve-conflict/starter.py"
+          },
+          "tests": {
+            "file": "practice/git-resolve-conflict/tests.py"
+          },
+          "solution": {
+            "file": "practice/git-resolve-conflict/solution.py"
+          }
+        },
+        {
+          "id": "git-quiz-merge-commit",
+          "type": "quiz",
+          "question": "`main` points to commit `E`, and branch `feature` points to `D`. Both grew from commit `C`. You run `git switch main` then `git merge feature`, and it succeeds without conflicts. Where does `main` point now?",
+          "options": [
+            "To `D`",
+            "To `E`, unchanged",
+            "To a new merge commit whose parents are `E` and `D`",
+            "To `C`"
+          ],
+          "answer": 2,
+          "explanation": "The histories have **diverged** (`E` and `D` both grew from `C`), so Git can't just move `main` forward. It creates a **merge commit** with two parents and moves `main` to it. `feature` still points to `D`."
+        },
+        {
+          "id": "git-quiz-fast-forward",
+          "type": "quiz",
+          "question": "What does a **fast-forward** merge mean?",
+          "options": [
+            "Git skipped running the tests to merge faster",
+            "The branch being merged in was built directly on top of the current branch, so Git just moved the branch name forward, with no merge commit",
+            "Git resolved a conflict automatically",
+            "The merge used rebase instead"
+          ],
+          "answer": 1,
+          "explanation": "If nothing happened on your branch since the other one split off, there's nothing to combine: the other branch's commits already contain everything. Git simply moves your branch label to the newer commit."
+        }
+      ]
+    },
+    {
+      "id": "github-remotes-and-pull-requests",
+      "title": "GitHub, remotes and pull requests",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "RGOj5yH7evk",
+          "title": "freeCodeCamp: Git and GitHub for beginners, crash course"
+        }
+      ],
+      "body": {
+        "file": "lessons/git-and-github/github-remotes-and-pull-requests.md"
+      },
+      "resources": [
+        {
+          "title": "GitHub docs: Hello World",
+          "url": "https://docs.github.com/en/get-started/start-your-journey/hello-world"
+        },
+        {
+          "title": "GitHub docs: About pull requests",
+          "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+        }
+      ],
+      "practice": [
+        {
+          "id": "git-lint-pr",
+          "type": "code",
+          "title": "Lint a pull request description",
+          "prompt": {
+            "file": "practice/git-lint-pr/prompt.md"
+          },
+          "starter": {
+            "file": "practice/git-lint-pr/starter.py"
+          },
+          "tests": {
+            "file": "practice/git-lint-pr/tests.py"
+          },
+          "solution": {
+            "file": "practice/git-lint-pr/solution.py"
+          }
+        },
+        {
+          "id": "git-quiz-fork-clone-branch",
+          "type": "quiz",
+          "question": "You want to fix a typo in a popular open-source library you **can't** push to. What do you do first?",
+          "options": [
+            "Clone it and push a branch to the original repository",
+            "Fork it on GitHub, clone your fork, and work on a branch",
+            "Create a branch on the original repository from the GitHub website",
+            "Download a zip of the code"
+          ],
+          "answer": 1,
+          "explanation": "A **fork** is your own copy on GitHub that you can push to. You clone the fork, work on a branch, push to the fork, then open a pull request back to the original. A **clone** is just a local copy, and a **branch** lives inside a repository you need push access to."
+        },
+        {
+          "id": "git-quiz-push-rejected",
+          "type": "quiz",
+          "question": "You run `git push` and get `! [rejected] main -> main (fetch first)`. What's happening, and what should you do?",
+          "options": [
+            "Your network failed; run `git push` again",
+            "The remote has commits you don't have; run `git pull`, resolve any conflicts, test, then push",
+            "Your branch is broken; delete it and clone again",
+            "Run `git push --force` to overwrite the remote"
+          ],
+          "answer": 1,
+          "explanation": "Someone pushed new commits since you last pulled. Git refuses to push because that would discard their work. `git pull` (fetch + merge) brings their commits in; then you can push. `--force` would delete their commits from the remote branch."
+        }
+      ]
+    },
+    {
+      "id": "good-commits-and-undoing-mistakes",
+      "title": "Good commits and undoing mistakes",
+      "duration": "75 min",
+      "videos": [],
+      "body": {
+        "file": "lessons/git-and-github/good-commits-and-undoing-mistakes.md"
+      },
+      "resources": [
+        {
+          "title": "Chris Beams: How to write a Git commit message",
+          "url": "https://cbea.ms/git-commit/"
+        },
+        {
+          "title": "Pro Git (the whole book, free)",
+          "url": "https://git-scm.com/book/en/v2"
+        }
+      ],
+      "practice": [
+        {
+          "id": "git-check-commit-message",
+          "type": "code",
+          "title": "Check a commit message",
+          "prompt": {
+            "file": "practice/git-check-commit-message/prompt.md"
+          },
+          "starter": {
+            "file": "practice/git-check-commit-message/starter.py"
+          },
+          "tests": {
+            "file": "practice/git-check-commit-message/tests.py"
+          },
+          "solution": {
+            "file": "practice/git-check-commit-message/solution.py"
+          }
+        },
+        {
+          "id": "git-quiz-undo-pushed",
+          "type": "quiz",
+          "question": "A commit you pushed to `main` yesterday broke the checkout page. Your teammates have already pulled it. What's the safe way to undo it?",
+          "options": [
+            "`git reset --hard HEAD~1` then `git push --force`",
+            "`git revert <hash>`, then push the new commit",
+            "`git commit --amend`",
+            "`git restore .`"
+          ],
+          "answer": 1,
+          "explanation": "`git revert` adds a **new** commit that does the opposite of the bad one, so nobody's history is rewritten. `reset` and `--amend` rewrite history, which is only safe for commits you haven't shared, and force-pushing them would break your teammates' copies. `restore` only touches uncommitted changes."
+        },
+        {
+          "id": "git-quiz-undo-local",
+          "type": "quiz",
+          "question": "You staged `notes.txt` by accident with `git add .`. You want it **out of the next commit**, but you want to keep your edits to it. Which command?",
+          "options": [
+            "`git restore notes.txt`",
+            "`git restore --staged notes.txt`",
+            "`git reset --hard`",
+            "`git revert notes.txt`"
+          ],
+          "answer": 1,
+          "explanation": "`git restore --staged` unstages a file and keeps your changes in the working tree. Plain `git restore notes.txt` would **discard** your edits, and `reset --hard` would discard every uncommitted change. `revert` works on commits, not files."
+        }
+      ]
+    },
+    {
+      "id": "team-workflow-issues-and-ci",
+      "title": "Team workflow, issues and CI",
+      "duration": "75 min",
+      "videos": [
+        {
+          "youtube": "R8_veQiYBjI",
+          "title": "TechWorld with Nana: GitHub Actions tutorial (watch the concepts part)"
+        }
+      ],
+      "body": {
+        "file": "lessons/git-and-github/team-workflow-issues-and-ci.md"
+      },
+      "resources": [
+        {
+          "title": "Atlassian: Feature branch workflow",
+          "url": "https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow"
+        },
+        {
+          "title": "GitHub docs: About issues",
+          "url": "https://docs.github.com/en/issues/tracking-your-work-with-issues/learning-about-issues/about-issues"
+        },
+        {
+          "title": "GitHub docs: Building and testing Python",
+          "url": "https://docs.github.com/en/actions/tutorials/build-and-test-code/python"
+        }
+      ],
+      "practice": [
+        {
+          "id": "git-ci-summary",
+          "type": "code",
+          "title": "Summarise a CI run for a pull request",
+          "prompt": {
+            "file": "practice/git-ci-summary/prompt.md"
+          },
+          "starter": {
+            "file": "practice/git-ci-summary/starter.py"
+          },
+          "tests": {
+            "file": "practice/git-ci-summary/tests.py"
+          },
+          "solution": {
+            "file": "practice/git-ci-summary/solution.py"
+          }
+        },
+        {
+          "id": "git-quiz-read-workflow",
+          "type": "quiz",
+          "question": "```yaml\nname: Tests\non:\n  pull_request:\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v6\n      - uses: actions/setup-python@v5\n        with:\n          python-version: \"3.12\"\n      - run: pip install -r requirements.txt\n      - run: pytest\n```\n\nWhen does this workflow run, and what makes it fail?",
+          "options": [
+            "On every push to any branch; it fails if `pytest` prints a warning",
+            "When a pull request is opened or updated; it fails if any step exits with a non-zero code, such as `pytest` with a failing test",
+            "Once a day; it fails if the code isn't formatted",
+            "Only when you click Run in the Actions tab; it never fails"
+          ],
+          "answer": 1,
+          "explanation": "`on: pull_request` triggers it when a PR is opened and each time new commits are pushed to it. Each step's **exit code** decides the result: `pytest` exits with 1 if any test fails (and `pip install` fails if a package can't be installed), which fails the job and marks the PR's check red."
+        },
+        {
+          "id": "git-quiz-required-check",
+          "type": "quiz",
+          "question": "Your repository's branch rule for `main` lists `test (3.12)` as a **required status check**. What does that mean?",
+          "options": [
+            "The check runs only on `main`, never on pull requests",
+            "A pull request can't be merged into `main` until that check has run and passed",
+            "Reviewers must run the tests by hand",
+            "The check is optional, but GitHub shows a warning"
+          ],
+          "answer": 1,
+          "explanation": "A required check is a CI job named in the branch rule. Until it finishes successfully on the PR's latest commit, GitHub disables merging, even for the author. It turns \"remember to run the tests\" into a guarantee."
+        }
+      ]
+    }
+  ],
+  "project": {
+    "id": "git-project",
+    "title": "Team Git exercise",
+    "brief": {
+      "file": "projects/git-and-github.md"
+    },
+    "checklist": [
+      "Repo on GitHub with a README, a Python `.gitignore` and a branch protection rule on `main`",
+      "Three issues created, each closed by its own PR (with `Closes #N`)",
+      "At least one merge conflict created and resolved deliberately, explained in the PR",
+      "Commit messages follow the seven rules (checked with your commit message checker)",
+      "One PR review with at least two comments, addressed by a follow-up commit",
+      "One mistake undone with `git revert`, documented in the PR"
+    ],
+    "links": true
+  }
+}
