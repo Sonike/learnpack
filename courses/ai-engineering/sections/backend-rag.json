@@ -219,7 +219,36 @@
       "videos": [
         {
           "youtube": "HXV3zeQKqGY",
-          "title": "freeCodeCamp: SQL Tutorial - Full Database Course for Beginners"
+          "title": "freeCodeCamp: SQL Tutorial - Full Database Course for Beginners",
+          "clips": [
+            {
+              "title": "SQL basics",
+              "start": 2611,
+              "end": 3146
+            },
+            {
+              "title": "Creating tables",
+              "start": 4549,
+              "end": 5465
+            },
+            {
+              "title": "Inserting data",
+              "start": 5465,
+              "end": 5897,
+              "then": "rag-sql-documents"
+            },
+            {
+              "title": "Basic queries",
+              "start": 6971,
+              "end": 7717
+            },
+            {
+              "title": "Joins",
+              "start": 10896,
+              "end": 11509,
+              "then": "rag-sql-chunks"
+            }
+          ]
         },
         {
           "youtube": "ciNHn38EyRc",
@@ -531,7 +560,32 @@
       "videos": [
         {
           "youtube": "sVcwVQRHIc8",
-          "title": "freeCodeCamp: Learn RAG From Scratch (watch after you've built your own)"
+          "title": "freeCodeCamp: Learn RAG From Scratch (watch after you've built your own)",
+          "clips": [
+            {
+              "title": "Overview: the RAG pipeline",
+              "start": 0,
+              "end": 353
+            },
+            {
+              "title": "Indexing",
+              "start": 353,
+              "end": 640,
+              "then": "rag-vector-store"
+            },
+            {
+              "title": "Retrieval",
+              "start": 640,
+              "end": 952,
+              "then": "rag-quiz-threshold"
+            },
+            {
+              "title": "Generation",
+              "start": 952,
+              "end": 1334,
+              "then": "rag-build-prompt"
+            }
+          ]
         }
       ],
       "body": {
@@ -645,7 +699,25 @@
       "videos": [
         {
           "youtube": "kT7nXO32L-Q",
-          "title": "freeCodeCamp: PostgreSQL Hybrid Search Course: Keyword (BM25) + Vector Retrieval"
+          "title": "freeCodeCamp: PostgreSQL Hybrid Search Course: Keyword (BM25) + Vector Retrieval",
+          "clips": [
+            {
+              "title": "Matching vs ranking, and BM25",
+              "start": 246,
+              "end": 699
+            },
+            {
+              "title": "BM25 keyword search in Postgres",
+              "start": 1660,
+              "end": 2252
+            },
+            {
+              "title": "Semantic search and hybrid search with RRF",
+              "start": 2252,
+              "end": 3133,
+              "then": "rag-rrf"
+            }
+          ]
         }
       ],
       "body": {

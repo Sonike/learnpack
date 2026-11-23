@@ -122,7 +122,7 @@ Example: a reading-only course with no timer or review:
 |---|---|
 | `id`, `title`, `body` | Required. `body` is Markdown: headings, code blocks with highlighting, tables, `> blockquotes` for tips. If it starts with `# Title`, that line is hidden because the page already shows the title. |
 | `duration` | Free text, e.g. `"45 min"`. |
-| `videos` | Embedded players. `{ "youtube": "VIDEO_ID", "title": "...", "start": 90 }` or `{ "playlist": "PLAYLIST_ID", "title": "..." }`. Several videos show as tabs. |
+| `videos` | Embedded players. `{ "youtube": "VIDEO_ID", "title": "...", "start": 90 }` or `{ "playlist": "PLAYLIST_ID", "title": "..." }`. Several videos show as tabs. A long video can add `clips` (beta): `[{ "title": "The event loop", "start": 312, "end": 980, "then": "practice-id" }]`, whole seconds with `start < end`. Learners then see short parts as tabs, a "Now try" link to the practice item named in `then` after each one, and a switch to the full video. |
 | `resources` | "Go deeper" links that open in a new tab. |
 | `practice` | Code exercises and quizzes. |
 

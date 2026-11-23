@@ -15,7 +15,30 @@
         },
         {
           "youtube": "zjkBMFhNj_g",
-          "title": "Andrej Karpathy: Intro to Large Language Models"
+          "title": "Andrej Karpathy: Intro to Large Language Models",
+          "clips": [
+            {
+              "title": "What an LLM is: inference and training",
+              "start": 20,
+              "end": 538,
+              "then": "llm-quiz-tokens"
+            },
+            {
+              "title": "How they work, and becoming an assistant",
+              "start": 538,
+              "end": 1072
+            },
+            {
+              "title": "Tools, multimodality and thinking",
+              "start": 1663,
+              "end": 2282
+            },
+            {
+              "title": "Security: jailbreaks and prompt injection",
+              "start": 2774,
+              "end": 3517
+            }
+          ]
         }
       ],
       "body": {
@@ -276,7 +299,31 @@
       "videos": [
         {
           "youtube": "8ib4Qnh2HFE",
-          "title": "Full AI Prompting Course with Andrew Ng (DeepLearningAI)"
+          "title": "Full AI Prompting Course with Andrew Ng (DeepLearningAI)",
+          "clips": [
+            {
+              "title": "Novice vs power user",
+              "start": 0,
+              "end": 334
+            },
+            {
+              "title": "Managing AI context",
+              "start": 3178,
+              "end": 3591,
+              "then": "llm-prompt-template"
+            },
+            {
+              "title": "Reasoning with AI",
+              "start": 3991,
+              "end": 4474
+            },
+            {
+              "title": "Sycophancy and writing strategies",
+              "start": 4474,
+              "end": 5261,
+              "then": "llm-quiz-specific-prompt"
+            }
+          ]
         }
       ],
       "body": {

@@ -197,7 +197,25 @@
       "videos": [
         {
           "youtube": "RwH2UzC2rIo",
-          "title": "Corey Schafer: type hints, from basic annotations to generics"
+          "title": "Corey Schafer: type hints, from basic annotations to generics",
+          "clips": [
+            {
+              "title": "Basic hints, Optional and unions",
+              "start": 166,
+              "end": 589
+            },
+            {
+              "title": "Aliases, NewType, TypedDict and dataclasses",
+              "start": 589,
+              "end": 1443
+            },
+            {
+              "title": "Best practices",
+              "start": 2218,
+              "end": 2458,
+              "then": "py-validate-user"
+            }
+          ]
         },
         {
           "youtube": "502XOB0u8OY",
@@ -472,7 +490,36 @@
       "videos": [
         {
           "youtube": "oAkLSJNr5zY",
-          "title": "Corey Schafer: AsyncIO, a complete guide with animations"
+          "title": "Corey Schafer: AsyncIO, a complete guide with animations",
+          "clips": [
+            {
+              "title": "Concurrency, the event loop, coroutines and tasks",
+              "start": 60,
+              "end": 832
+            },
+            {
+              "title": "The classic async mistake",
+              "start": 1081,
+              "end": 1540
+            },
+            {
+              "title": "Fixing it: real concurrency",
+              "start": 1540,
+              "end": 2040
+            },
+            {
+              "title": "Blocking the event loop",
+              "start": 2324,
+              "end": 2831,
+              "then": "py-quiz-blocking"
+            },
+            {
+              "title": "gather and task groups",
+              "start": 3310,
+              "end": 4040,
+              "then": "py-gather-settled"
+            }
+          ]
         },
         {
           "youtube": "ftmdDlwMwwQ",
@@ -664,7 +711,32 @@
       "videos": [
         {
           "youtube": "cHYq1MRoyI0",
-          "title": "freeCodeCamp: Pytest tutorial, how to test Python code"
+          "title": "freeCodeCamp: Pytest tutorial, how to test Python code",
+          "clips": [
+            {
+              "title": "Your first tests",
+              "start": 366,
+              "end": 1168,
+              "then": "py-test-slugify"
+            },
+            {
+              "title": "Fixtures",
+              "start": 1789,
+              "end": 2470
+            },
+            {
+              "title": "Mark and parametrize",
+              "start": 2470,
+              "end": 3324,
+              "then": "py-quiz-good-test"
+            },
+            {
+              "title": "Mocking",
+              "start": 3324,
+              "end": 4396,
+              "then": "py-project-fetch-one"
+            }
+          ]
         },
         {
           "youtube": "ULxMQ57engo",

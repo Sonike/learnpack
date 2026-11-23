@@ -479,18 +479,63 @@ function renderDashboard() {
 }
 
 // The YouTube player is about 1 MB of script, so lessons show its thumbnail and load it on click.
-function playerHtml(v, fallbackTitle, play = false) {
-  const title = esc(v.title || fallbackTitle);
-  if (play) return `<iframe src="${ytSrc(v, true)}" title="${title}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+function playerHtml(v, fallbackTitle, play = false, clip = null) {
+  const title = esc(clip?.title || v.title || fallbackTitle);
+  if (play) return `<iframe src="${ytSrc(v, true, clip)}" title="${title}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
   const thumb = v.youtube ? `<img src="https://i.ytimg.com/vi/${encodeURIComponent(v.youtube)}/hqdefault.jpg" alt="" loading="lazy" decoding="async">` : "";
   return `<button class="yt-poster" aria-label="Play video: ${title}">${thumb}<span class="yt-play" aria-hidden="true"></span></button>`;
 }
 
-function ytSrc(v, autoplay = false) {
+// The lesson's videos. A long video can come with short clips (beta): the learner watches them as
+// parts, each followed by a "Now try" link to its exercise, and can switch back to the full video.
+function videoBlock(host, l, videos) {
+  const st = { k: 0, c: 0, mode: store.get("videoMode") === "full" ? "full" : "clips" };
+  const mins = (s) => `${Math.max(1, Math.round(s / 60))} min`;
+  const practiceTitle = (id) => {
+    const p = (l.practice || []).find((x) => x.id === id);
+    if (!p) return "";
+    if (p.title) return p.title;
+    const q = String(p.question || "").replace(/[`*_#>]/g, "").replace(/\s+/g, " ").trim();  // a quiz: show its question
+    return `quick check, "${q.length > 60 ? q.slice(0, 57).trimEnd() + "…" : q}"`;
+  };
+  const draw = (play = false) => {
+    const v = videos[st.k], clips = v.clips?.length ? v.clips : null, useClips = clips && st.mode === "clips";
+    const clip = useClips ? clips[Math.min(st.c, clips.length - 1)] : null;
+    const then = clip?.then && practiceTitle(clip.then);
+    host.innerHTML = `
+      ${videos.length > 1 ? `<div class="video-tabs tabs">${videos.map((x, k) => `<button class="tab ${k === st.k ? "active" : ""}" data-video="${k}">${esc(x.title || `Video ${k + 1}`)}</button>`).join("")}</div>` : ""}
+      ${clips ? `<div class="video-mode" role="group" aria-label="How to watch">
+          <button class="${useClips ? "on" : ""}" data-video-mode="clips" aria-pressed="${!!useClips}">Short clips <span class="beta">beta</span></button>
+          <button class="${useClips ? "" : "on"}" data-video-mode="full" aria-pressed="${!useClips}">Full video</button>
+        </div>` : ""}
+      ${useClips ? `<div class="clip-tabs tabs">${clips.map((x, i) => `<button class="tab ${i === st.c ? "active" : ""}" data-clip="${i}" title="${esc(x.title)}">Part ${i + 1} · ${mins(x.end - x.start)}</button>`).join("")}</div>` : ""}
+      <div class="player">${playerHtml(v, l.title, play, clip)}</div>
+      <div class="video-caption">
+        <p class="meta">${esc(clip ? `Part ${st.c + 1} of ${clips.length}: ${clip.title}` : (v.title || ""))}</p>
+        ${then ? `<a href="#" class="now-try" data-then="${esc(clip.then)}">Now try: ${esc(then)} →</a>` : ""}
+      </div>`;
+  };
+  host.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-video],[data-video-mode],[data-clip],[data-then],.yt-poster");
+    if (!t) return;
+    if (t.dataset.video) { st.k = +t.dataset.video; st.c = 0; draw(); }
+    else if (t.dataset.videoMode) { st.mode = t.dataset.videoMode; store.set("videoMode", st.mode); draw(); }
+    else if (t.dataset.clip) { st.c = +t.dataset.clip; draw(true); }
+    else if (t.dataset.then) {
+      e.preventDefault();
+      const card = document.querySelector(`[data-practice-id="${CSS.escape(t.dataset.then)}"]`);
+      if (card) { card.scrollIntoView({ behavior: "smooth", block: "start" }); card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash"); }
+    } else draw(true);  // the play button on the thumbnail
+  });
+  draw();
+}
+
+function ytSrc(v, autoplay = false, clip = null) {
   const base = "https://www.youtube-nocookie.com/embed/";
   const q = new URLSearchParams({ rel: "0", modestbranding: "1" });
   if (autoplay) q.set("autoplay", "1");
-  if (v.start) q.set("start", v.start);
+  if (clip) { q.set("start", clip.start); q.set("end", clip.end); }
+  else if (v.start) q.set("start", v.start);
   if (v.playlist) { q.set("list", v.playlist); return `${base}videoseries?${q}`; }
   return `${base}${encodeURIComponent(v.youtube)}?${q}`;
 }
@@ -506,11 +551,7 @@ function renderLesson(id) {
     <div class="crumbs">${esc(l.section.title)}</div>
     <h1 class="page-title">${esc(l.title)}</h1>
     <p class="meta">${[l.duration, videos.length ? `${videos.length} video${videos.length > 1 ? "s" : ""}` : "", (l.practice || []).length ? `${l.practice.length} practice` : ""].filter(Boolean).join(", ")}</p>
-    ${videos.length ? `<section class="block" aria-label="Video">
-      ${videos.length > 1 ? `<div class="video-tabs tabs">${videos.map((v, k) => `<button class="tab ${k ? "" : "active"}" data-video="${k}">${esc(v.title || `Video ${k + 1}`)}</button>`).join("")}</div>` : ""}
-      <div class="player">${playerHtml(videos[0], l.title)}</div>
-      ${videos.length === 1 && videos[0].title ? `<p class="meta" style="margin-top:8px">${esc(videos[0].title)}</p>` : ""}
-    </section>` : ""}
+    ${videos.length ? `<section class="block video-block" aria-label="Video"></section>` : ""}
     <section class="block prose">${md(l.body.replace(/^\s*# [^\n]*\n/, ""))}</section>
     ${(l.resources || []).length ? `<section class="block"><h2>Go deeper</h2><ul class="resources">${l.resources.map((r) => {
       let host = ""; try { host = new URL(r.url).hostname.replace(/^www\./, ""); } catch (e) {}
@@ -526,14 +567,7 @@ function renderLesson(id) {
       </div>
     </div></article>`;
 
-  document.querySelectorAll("[data-video]").forEach((b) => (b.onclick = () => {
-    document.querySelectorAll("[data-video]").forEach((x) => x.classList.toggle("active", x === b));
-    $(".player").innerHTML = playerHtml(videos[+b.dataset.video], l.title);
-  }));
-  $(".player")?.addEventListener("click", (e) => {
-    const b = e.target.closest(".yt-poster");
-    if (b) $(".player").innerHTML = playerHtml(videos[+($(".video-tabs .active")?.dataset.video || 0)], l.title, true);
-  });
+  if (videos.length) videoBlock($(".video-block"), l, videos);
 
   const doneBtn = $("#done-btn");
   const paint = () => { doneBtn.innerHTML = isDone(l.id) ? `<span class="done-check">✓</span> Done` : "Mark as done"; doneBtn.classList.toggle("is-done", isDone(l.id)); };
@@ -556,6 +590,7 @@ function renderLesson(id) {
 function quizCard(p, { onResult = lessonQuizResult(p), heading = "Quick check" } = {}) {
   const el = document.createElement("div");
   el.className = "card practice";
+  el.dataset.practiceId = p.id;
   const name = `q-${p.id}`;
   el.innerHTML = `<div class="practice-head"><h3>${esc(heading)}</h3><span class="badge">Quiz</span></div>
     <div class="prose">${md(p.question)}</div>
@@ -589,6 +624,7 @@ function codeCard(p) {
   const lang = p.language || S.course.language || "python";
   const el = document.createElement("div");
   el.className = "card practice";
+  el.dataset.practiceId = p.id;
   const passed = () => S.state.passed.includes(p.id);
   el.innerHTML = `<div class="practice-head"><h3>${esc(p.title)}</h3>
       <span><span class="badge">${{ python: "Python", javascript: "JavaScript", typescript: "TypeScript" }[lang]}</span> ${p.needs_api_key ? `<span class="badge key" title="Run uses your real API key from .env; Check is free and offline">Uses API key on Run</span> ` : ""}<span class="badge status"></span></span></div>

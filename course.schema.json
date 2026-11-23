@@ -232,6 +232,37 @@
               "start": {
                 "type": "integer",
                 "description": "Start time in seconds"
+              },
+              "clips": {
+                "type": "array",
+                "description": "Optional short parts of a long video (beta). Learners can switch between these clips and the full video.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "title",
+                    "start",
+                    "end"
+                  ],
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "description": "Clip start, in seconds"
+                    },
+                    "end": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "description": "Clip end, in seconds (must be after start)"
+                    },
+                    "then": {
+                      "type": "string",
+                      "description": "Id of a practice item in this lesson to do after the clip"
+                    }
+                  }
+                }
               }
             }
           }

@@ -126,6 +126,17 @@ button.side-section-head:hover { background: var(--sunken); }
 
 /* Video */
 .video-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.clip-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.video-mode { display: inline-flex; border: 1.5px solid var(--line); border-radius: 99px; padding: 3px; margin-bottom: 10px; gap: 2px; }
+.video-mode button { background: none; border: 0; border-radius: 99px; padding: 5px 12px; font: 500 13px var(--font-body); color: var(--muted); cursor: pointer; }
+.video-mode button.on { background: var(--accent); color: var(--accent-ink); }
+.video-mode .beta { font: 600 10px var(--font-mono, monospace); text-transform: uppercase; letter-spacing: .04em; opacity: .8; margin-left: 2px; }
+.video-caption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+.video-caption .meta { margin: 0; }
+.now-try { font-weight: 600; color: var(--accent); text-decoration: none; }
+.now-try:hover { text-decoration: underline; }
+.card.practice.flash { animation: flash 1.6s ease; }
+@keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
 .tabs { display: flex; gap: 4px; }
 .tab { background: none; border: 1.5px solid var(--line); color: var(--muted); border-radius: 99px; padding: 5px 12px;
   font: 500 13px var(--font-body); cursor: pointer; transition: color .15s, border-color .15s, background .15s; }

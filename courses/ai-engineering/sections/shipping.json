@@ -110,7 +110,31 @@
       "videos": [
         {
           "youtube": "pg19Z8LL06w",
-          "title": "TechWorld with Nana: Docker Crash Course for Absolute Beginners"
+          "title": "TechWorld with Nana: Docker Crash Course for Absolute Beginners",
+          "clips": [
+            {
+              "title": "What Docker is and the problems it solves",
+              "start": 174,
+              "end": 698
+            },
+            {
+              "title": "Images, containers and registries",
+              "start": 1296,
+              "end": 1922
+            },
+            {
+              "title": "Pull, run and port binding",
+              "start": 1922,
+              "end": 2570,
+              "then": "ship-quiz-docker-host"
+            },
+            {
+              "title": "Write a Dockerfile and build the image",
+              "start": 2949,
+              "end": 3759,
+              "then": "ship-dockerfile-lint"
+            }
+          ]
         },
         {
           "youtube": "JofsaZ3H1qM",
@@ -118,7 +142,24 @@
         },
         {
           "youtube": "SXwC9fSwct8",
-          "title": "TechWorld with Nana: Ultimate Docker Compose Tutorial"
+          "title": "TechWorld with Nana: Ultimate Docker Compose Tutorial",
+          "clips": [
+            {
+              "title": "Why Docker Compose",
+              "start": 72,
+              "end": 718
+            },
+            {
+              "title": "Write a Compose file and start the app",
+              "start": 718,
+              "end": 1402
+            },
+            {
+              "title": "Variables and secrets",
+              "start": 2436,
+              "end": 2801
+            }
+          ]
         }
       ],
       "body": {
@@ -208,7 +249,31 @@
       "videos": [
         {
           "youtube": "eqjngvKfabg",
-          "title": "Corey Schafer: Python FastAPI Tutorial (Part 19): Deploy with Docker (uses Google Cloud Run; same ideas)"
+          "title": "Corey Schafer: Python FastAPI Tutorial (Part 19): Deploy with Docker (uses Google Cloud Run; same ideas)",
+          "clips": [
+            {
+              "title": "Health check and middleware",
+              "start": 83,
+              "end": 409,
+              "then": "ship-public-api-guards"
+            },
+            {
+              "title": "The Dockerfile and .dockerignore",
+              "start": 643,
+              "end": 1448
+            },
+            {
+              "title": "Building and deploying",
+              "start": 2388,
+              "end": 3067,
+              "then": "ship-quiz-railway-health"
+            },
+            {
+              "title": "Custom domain setup",
+              "start": 3504,
+              "end": 4170
+            }
+          ]
         },
         {
           "youtube": "A5I45e0CDbI",

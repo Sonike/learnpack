@@ -81,3 +81,31 @@ def test_new_fields_validated(tmp_path):
     probs = " | ".join(validate_pack(make_pack(tmp_path, c)))
     for word in ("format", "language", "teleport", "accent", "missing.css"):
         assert word in probs, (word, probs)
+
+
+def clip_lesson(clips, video=None):
+    quiz = {"id": "q1", "type": "quiz", "question": "?", "options": ["a", "b"], "answer": 0}
+    v = video or {"youtube": "abc123def45", "title": "Full course"}
+    return {"id": "l1", "title": "L1", "body": "hi", "videos": [{**v, "clips": clips}], "practice": [quiz]}
+
+
+def test_clips_valid_pack_passes(tmp_path):
+    clips = [{"title": "Part 1", "start": 0, "end": 300, "then": "q1"}, {"title": "Part 2", "start": 300, "end": 900}]
+    assert validate_pack(make_pack(tmp_path, course_with(clip_lesson(clips)))) == []
+
+
+def test_clip_bad_times_rejected(tmp_path):
+    for bad in ({"title": "x", "start": 50, "end": 50}, {"title": "x", "start": -1, "end": 10}, {"title": "x", "start": "0", "end": 10}):
+        probs = " | ".join(validate_pack(make_pack(tmp_path, course_with(clip_lesson([bad])))))
+        assert "clip" in probs, (bad, probs)
+
+
+def test_clip_then_must_be_in_lesson(tmp_path):
+    probs = " | ".join(validate_pack(make_pack(tmp_path, course_with(clip_lesson([{"title": "x", "start": 0, "end": 60, "then": "nope"}])))))
+    assert "nope" in probs
+
+
+def test_clips_need_youtube_not_playlist(tmp_path):
+    lesson = clip_lesson([{"title": "x", "start": 0, "end": 60}], video={"playlist": "PL123", "title": "List"})
+    probs = " | ".join(validate_pack(make_pack(tmp_path, course_with(lesson))))
+    assert "clip" in probs and "playlist" in probs

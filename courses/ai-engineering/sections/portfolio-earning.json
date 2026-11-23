@@ -415,7 +415,24 @@
         },
         {
           "youtube": "kCc8FmEb1nY",
-          "title": "Andrej Karpathy: Let's build GPT: from scratch, in code, spelled out."
+          "title": "Andrej Karpathy: Let's build GPT: from scratch, in code, spelled out.",
+          "clips": [
+            {
+              "title": "Intro, data and tokenization",
+              "start": 0,
+              "end": 867
+            },
+            {
+              "title": "Self-attention: the crux of the video",
+              "start": 3720,
+              "end": 4298
+            },
+            {
+              "title": "Pretraining vs finetuning",
+              "start": 6533,
+              "end": 6872
+            }
+          ]
         },
         {
           "playlist": "PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_",

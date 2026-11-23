@@ -256,7 +256,25 @@
       "videos": [
         {
           "youtube": "KP6_BUw3i0U",
-          "title": "Meta Developers: Building End-to-End Experiences with the WhatsApp Business Platform"
+          "title": "Meta Developers: Building End-to-End Experiences with the WhatsApp Business Platform",
+          "clips": [
+            {
+              "title": "Getting started with the Cloud API",
+              "start": 186,
+              "end": 665
+            },
+            {
+              "title": "Creating a WhatsApp app",
+              "start": 665,
+              "end": 1264
+            },
+            {
+              "title": "Webhooks for customer messages",
+              "start": 1264,
+              "end": 1947,
+              "then": "cap-whatsapp-webhook"
+            }
+          ]
         }
       ],
       "body": {

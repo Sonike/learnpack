@@ -127,9 +127,27 @@ def validate_pack(pack_dir: Path) -> list[str]:
             lw = f"lesson {l.get('id')}"
             check_id(l, lw)
             need(l, lw, "title", "body")
+            practice_ids = {p.get("id") for p in l.get("practice", [])}
             for v in l.get("videos", []):
                 if not (v.get("youtube") or v.get("playlist")):
                     problems.append(f"{lw}: video needs 'youtube' or 'playlist'")
+                clips = v.get("clips")
+                if clips is None:
+                    continue
+                if not v.get("youtube"):
+                    problems.append(f"{lw}: clips need a single 'youtube' video, not a playlist")
+                if not isinstance(clips, list):
+                    problems.append(f"{lw}: clips must be a list")
+                    continue
+                for i, cl in enumerate(clips, 1):
+                    cw = f"{lw}: clip {i}"
+                    start, end = cl.get("start"), cl.get("end")
+                    if not cl.get("title"):
+                        problems.append(f"{cw} needs a title")
+                    if not (type(start) is int and type(end) is int and 0 <= start < end):
+                        problems.append(f"{cw} needs whole-second start and end, with start < end")
+                    if "then" in cl and cl["then"] not in practice_ids:
+                        problems.append(f"{cw}: 'then' points to {cl['then']!r}, which isn't a practice item in this lesson")
             for r in l.get("resources", []):
                 if not str(r.get("url", "")).startswith(("http://", "https://")):
                     problems.append(f"{lw}: resource url must be http(s)")
