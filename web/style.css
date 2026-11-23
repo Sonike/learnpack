@@ -126,15 +126,44 @@ button.side-section-head:hover { background: var(--sunken); }
 
 /* Video */
 .video-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-.clip-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-.video-mode { display: inline-flex; border: 1.5px solid var(--line); border-radius: 99px; padding: 3px; margin-bottom: 10px; gap: 2px; }
-.video-mode button { background: none; border: 0; border-radius: 99px; padding: 5px 12px; font: 500 13px var(--font-body); color: var(--muted); cursor: pointer; }
-.video-mode button.on { background: var(--accent); color: var(--accent-ink); }
-.video-mode .beta { font: 600 10px var(--font-mono, monospace); text-transform: uppercase; letter-spacing: .04em; opacity: .8; margin-left: 2px; }
-.video-caption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-.video-caption .meta { margin: 0; }
+/* Lesson flow: steps strip, step labels, and the playlist under the player */
+.lesson-steps { display: flex; align-items: center; gap: 10px; margin: -12px 0 8px; flex-wrap: wrap; }
+.lesson-steps button { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 0; font: 600 14px var(--font-body); color: var(--muted); cursor: pointer; }
+.lesson-steps button:hover { color: var(--ink); }
+.lesson-steps .ls-num { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; border: 1.5px solid var(--line); }
+.lesson-steps button.on { color: var(--ink); }
+.lesson-steps button.on .ls-num { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.lesson-steps .ls-line { width: 28px; height: 1.5px; background: var(--line); }
+.step-label { font: 600 12px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.watch-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; font-size: 14px; color: var(--muted); }
+.watch-head > * { white-space: nowrap; }
+.link-btn { background: none; border: 0; padding: 0; font: 500 14px var(--font-body); color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.link-btn:hover { color: var(--ink); }
+.link-btn .beta { font: 600 10px var(--font-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--accent); text-decoration: none; display: inline-block; }
+.now-playing { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 12px 0 18px; font-size: 15px; color: var(--muted); }
+.now-playing b { color: var(--ink); font-weight: 600; }
 .now-try { font-weight: 600; color: var(--accent); text-decoration: none; }
 .now-try:hover { text-decoration: underline; }
+.playlist, .playlist ol { list-style: none; margin: 0; padding: 0; }
+.playlist { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+.playlist > li + li { border-top: 1px solid var(--line); }
+.pl-group-head { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px 6px; font-weight: 600; font-size: 14px; }
+.pl-credit { color: var(--muted); font-weight: 500; font-size: 13px; white-space: nowrap; }
+.pl-group ol { padding-bottom: 6px; }
+.pl-item { display: flex; align-items: center; gap: 4px; padding-right: 14px; }
+@media (max-width: 560px) { .pl-try-slot { width: auto; } .pl-credit { display: none; } .watch-head { flex-direction: column; gap: 4px; } }
+.pl-item .pl-play { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; background: none; border: 0; padding: 10px 16px; text-align: left; font: 15px var(--font-body); color: var(--ink); cursor: pointer; border-left: 3px solid transparent; }
+.pl-item:hover { background: var(--sunken); }
+.pl-item.on { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.pl-item.on .pl-play { border-left-color: var(--accent); font-weight: 600; }
+.pl-num { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 600; color: var(--muted); border: 1.5px solid var(--line); }
+.pl-item.on .pl-num { border-color: var(--accent); color: var(--accent); }
+.pl-item.done .pl-num { background: var(--ok); border-color: var(--ok); color: #fff; }
+.pl-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl-len { flex: none; color: var(--muted); font-size: 13px; font-weight: 500; }
+.pl-try-slot { flex: none; width: 76px; text-align: right; }
+.pl-try { flex: none; font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; white-space: nowrap; }
+.pl-try:hover { text-decoration: underline; }
 .card.practice.flash { animation: flash 1.6s ease; }
 @keyframes flash { 0%, 40% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
 .tabs { display: flex; gap: 4px; }
@@ -516,3 +545,25 @@ body.resizing .browser-panel { animation: none; }
   font-size: 14px; color: var(--muted); }
 .backup-row > span:first-child { margin-right: auto; }
 .backup-row label.btn { cursor: pointer; }
+
+/* Phones: one clear action at a time, nothing squeezed. */
+@media (max-width: 560px) {
+  #focus-btn, #theme-btn { display: none !important; }      /* phones follow the system theme */
+  .topbar { gap: 6px; padding: 0 12px; }
+  .brand-wrap { flex: 1; }
+  .timer-btn { padding: 6px 10px; }
+  .lesson-steps { margin-top: -8px; }
+  .lesson-steps .ls-line { width: 16px; }
+  .pl-try-slot { display: none; }                            /* "Now try" shows under the player instead */
+  .pl-title { white-space: normal; overflow: visible; line-height: 1.35; }
+  .pl-item .pl-play { padding: 12px 14px; align-items: flex-start; }
+  .actions { gap: 10px; }
+  .actions [data-act="check"], .actions [data-act="run"] { flex: 1; justify-content: center; }
+  .actions .spacer { flex-basis: 100%; height: 0; }
+  .actions [data-act="solution"], .actions [data-act="reset"] { background: none; border: 0; padding: 4px 2px; color: var(--muted); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; box-shadow: none; transform: none; }
+  .lesson-foot { flex-direction: column-reverse; align-items: stretch; gap: 10px; }
+  .lesson-foot .done-btn { justify-content: center; }
+  .lesson-foot .nav { flex-wrap: wrap; justify-content: center; gap: 4px 18px; }
+  .lesson-foot #next-lesson { order: -1; flex-basis: 100%; justify-content: center; padding: 12px 18px; font-size: 15px; }
+  .lesson-foot .nav .btn.ghost { background: none; border: 0; padding: 6px 2px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; box-shadow: none; transform: none; }
+}

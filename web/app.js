@@ -347,6 +347,7 @@ async function loadCourse(cid) {
   [S.course, S.state] = await Promise.all([api(`/courses/${cid}`), api(`/courses/${cid}/state`)]);
   S.cid = cid;
   S.state.passed ||= [];
+  S.state.watched ||= {};    // "lesson:video:clip" -> 1 once played
   S.state.study ||= {};      // day -> seconds studied
   S.state.pomodoros ||= {};  // day -> focus sessions finished
   S.state.review ||= {};     // quiz id -> {box, due}
@@ -486,46 +487,75 @@ function playerHtml(v, fallbackTitle, play = false, clip = null) {
   return `<button class="yt-poster" aria-label="Play video: ${title}">${thumb}<span class="yt-play" aria-hidden="true"></span></button>`;
 }
 
-// The lesson's videos. A long video can come with short clips (beta): the learner watches them as
-// parts, each followed by a "Now try" link to its exercise, and can switch back to the full video.
+// The lesson's videos, as one numbered playlist under the player (like a classroom): each long video
+// with clips is a group of short parts; other videos are single items. Parts you've played get a tick.
+// "Watch the full video" swaps clips for the original (beta, remembered per browser).
 function videoBlock(host, l, videos) {
+  const anyClips = videos.some((v) => v.clips?.length);
   const st = { k: 0, c: 0, mode: store.get("videoMode") === "full" ? "full" : "clips" };
+  const clipsOf = (v) => (st.mode === "clips" && v.clips?.length ? v.clips : null);
+  if (!clipsOf(videos[0])) st.c = -1;
   const mins = (s) => `${Math.max(1, Math.round(s / 60))} min`;
+  const watched = (k, c) => !!S.state.watched?.[`${l.id}:${k}:${c}`];
+  const markWatched = (k, c) => { S.state.watched ||= {}; if (!watched(k, c)) { S.state.watched[`${l.id}:${k}:${c}`] = 1; saveState(); } };
   const practiceTitle = (id) => {
     const p = (l.practice || []).find((x) => x.id === id);
     if (!p) return "";
     if (p.title) return p.title;
     const q = String(p.question || "").replace(/[`*_#>]/g, "").replace(/\s+/g, " ").trim();  // a quiz: show its question
-    return `quick check, "${q.length > 60 ? q.slice(0, 57).trimEnd() + "…" : q}"`;
+    return `Quick check: ${q.length > 48 ? q.slice(0, 46).trimEnd() + "…" : q}`;
+  };
+  const credit = (v) => (v.title || "").split(":")[0];           // "freeCodeCamp: SQL Tutorial…" -> "freeCodeCamp"
+  const named = (v) => (v.title || "").replace(/^[^:]+:\s*/, "");  // … -> "SQL Tutorial…"
+  const clipCount = () => videos.reduce((n, v) => n + (clipsOf(v)?.length || 0), 0);
+  const minutes = () => videos.reduce((t, v) => t + (clipsOf(v) || []).reduce((a, c) => a + c.end - c.start, 0), 0);
+
+  const item = (k, c, num, title, len, then) => {
+    const on = st.k === k && st.c === c, done = watched(k, c);
+    return `<li class="pl-item ${on ? "on" : ""} ${done ? "done" : ""}">
+      <button class="pl-play" data-k="${k}" data-c="${c}" aria-current="${on}">
+        <span class="pl-num" aria-hidden="true">${done ? "✓" : num}</span>
+        <span class="pl-title">${esc(title)}</span>${len ? `<span class="pl-len">${len}</span>` : ""}
+      </button><span class="pl-try-slot">${then ? `<a href="#" class="pl-try" data-then="${esc(then)}">Now try →</a>` : ""}</span></li>`;
+  };
+  const playlist = () => {
+    let n = 0;
+    return `<ol class="playlist">${videos.map((v, k) => {
+      const clips = clipsOf(v);
+      if (!clips) return item(k, -1, ++n, v.title || `Video ${k + 1}`, v.clips?.length && st.mode === "full" ? "Full video" : "", null);
+      return `<li class="pl-group"><div class="pl-group-head"><span>${esc(named(v) || "Video")}</span><span class="pl-credit">${esc(credit(v))}</span></div>
+        <ol>${clips.map((c, i) => item(k, i, ++n, c.title, mins(c.end - c.start), c.then)).join("")}</ol></li>`;
+    }).join("")}</ol>`;
   };
   const draw = (play = false) => {
-    const v = videos[st.k], clips = v.clips?.length ? v.clips : null, useClips = clips && st.mode === "clips";
-    const clip = useClips ? clips[Math.min(st.c, clips.length - 1)] : null;
+    const v = videos[st.k], clips = clipsOf(v), clip = clips && st.c >= 0 ? clips[st.c] : null;
     const then = clip?.then && practiceTitle(clip.then);
+    const single = videos.length === 1 && !clips;
     host.innerHTML = `
-      ${videos.length > 1 ? `<div class="video-tabs tabs">${videos.map((x, k) => `<button class="tab ${k === st.k ? "active" : ""}" data-video="${k}">${esc(x.title || `Video ${k + 1}`)}</button>`).join("")}</div>` : ""}
-      ${clips ? `<div class="video-mode" role="group" aria-label="How to watch">
-          <button class="${useClips ? "on" : ""}" data-video-mode="clips" aria-pressed="${!!useClips}">Short clips <span class="beta">beta</span></button>
-          <button class="${useClips ? "" : "on"}" data-video-mode="full" aria-pressed="${!useClips}">Full video</button>
-        </div>` : ""}
-      ${useClips ? `<div class="clip-tabs tabs">${clips.map((x, i) => `<button class="tab ${i === st.c ? "active" : ""}" data-clip="${i}" title="${esc(x.title)}">Part ${i + 1} · ${mins(x.end - x.start)}</button>`).join("")}</div>` : ""}
+      <div class="step-label">Step 1 · Watch</div>
+      ${single ? "" : `<div class="watch-head"><span>${clipCount() ? `${clipCount()} short clips · about ${Math.round(minutes() / 60)} min` : `${videos.length} videos`}</span>
+        ${anyClips ? `<button class="link-btn" data-mode="${st.mode === "clips" ? "full" : "clips"}">${st.mode === "clips" ? "Watch full videos instead" : "Use short clips <span class=\"beta\">beta</span>"}</button>` : ""}</div>`}
       <div class="player">${playerHtml(v, l.title, play, clip)}</div>
-      <div class="video-caption">
-        <p class="meta">${esc(clip ? `Part ${st.c + 1} of ${clips.length}: ${clip.title}` : (v.title || ""))}</p>
+      <div class="now-playing">
+        <span>${clip ? `<b>Part ${st.c + 1} of ${clips.length}</b> · ${esc(clip.title)}` : esc(v.title || "")}</span>
         ${then ? `<a href="#" class="now-try" data-then="${esc(clip.then)}">Now try: ${esc(then)} →</a>` : ""}
-      </div>`;
+      </div>
+      ${single ? "" : playlist()}`;
   };
   host.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-video],[data-video-mode],[data-clip],[data-then],.yt-poster");
+    const t = e.target.closest("[data-k],[data-mode],[data-then],.yt-poster");
     if (!t) return;
-    if (t.dataset.video) { st.k = +t.dataset.video; st.c = 0; draw(); }
-    else if (t.dataset.videoMode) { st.mode = t.dataset.videoMode; store.set("videoMode", st.mode); draw(); }
-    else if (t.dataset.clip) { st.c = +t.dataset.clip; draw(true); }
-    else if (t.dataset.then) {
+    if (t.dataset.then) {
       e.preventDefault();
       const card = document.querySelector(`[data-practice-id="${CSS.escape(t.dataset.then)}"]`);
       if (card) { card.scrollIntoView({ behavior: "smooth", block: "start" }); card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash"); }
-    } else draw(true);  // the play button on the thumbnail
+    } else if (t.dataset.mode) {
+      st.mode = t.dataset.mode; store.set("videoMode", st.mode);
+      st.c = clipsOf(videos[st.k]) ? 0 : -1; draw();
+    } else if (t.dataset.k) {
+      st.k = +t.dataset.k; st.c = +t.dataset.c; markWatched(st.k, st.c); draw(true);
+      host.querySelector(".player").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } else { markWatched(st.k, st.c); draw(true); }  // the play button on the thumbnail
   });
   draw();
 }
@@ -540,6 +570,28 @@ function ytSrc(v, autoplay = false, clip = null) {
   return `${base}${encodeURIComponent(v.youtube)}?${q}`;
 }
 
+// "1 Watch → 2 Read → 3 Practice" under the title: shows the lesson as a flow, jumps to each step,
+// and lights up the step you're reading.
+function lessonSteps(l) {
+  const steps = [l.videos?.length && ["step-watch", "Watch"], ["step-read", "Read"], l.practice?.length && ["step-practice", "Practice"]].filter(Boolean);
+  if (steps.length < 2) return "";
+  return `<nav class="lesson-steps" aria-label="Lesson steps">${steps.map(([id, name], i) =>
+    `<button data-step="${id}"><span class="ls-num">${i + 1}</span>${name}</button>${i < steps.length - 1 ? '<span class="ls-line" aria-hidden="true"></span>' : ""}`).join("")}</nav>`;
+}
+function wireLessonSteps() {
+  const nav = $(".lesson-steps");
+  if (!nav) return;
+  const buttons = [...nav.querySelectorAll("[data-step]")];
+  const light = (id) => buttons.forEach((b) => b.classList.toggle("on", b.dataset.step === id));
+  nav.addEventListener("click", (e) => { const b = e.target.closest("[data-step]"); if (b) { light(b.dataset.step); document.getElementById(b.dataset.step)?.scrollIntoView({ behavior: "smooth", block: "start" }); } });
+  light(buttons[0].dataset.step);
+  const io = new IntersectionObserver((entries) => {
+    const seen = entries.filter((x) => x.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (seen) light(seen.target.id);
+  }, { rootMargin: "-20% 0px -60% 0px" });
+  buttons.forEach((b) => { const el = document.getElementById(b.dataset.step); if (el) io.observe(el); });
+}
+
 function renderLesson(id) {
   const list = allLessons(), i = list.findIndex((l) => l.id === id);
   if (i < 0) { setChrome(); $("#main").innerHTML = `<div class="page"><p class="empty">That lesson doesn't exist. <a href="#/${S.cid}">Back to the course</a></p></div>`; return; }
@@ -551,13 +603,14 @@ function renderLesson(id) {
     <div class="crumbs">${esc(l.section.title)}</div>
     <h1 class="page-title">${esc(l.title)}</h1>
     <p class="meta">${[l.duration, videos.length ? `${videos.length} video${videos.length > 1 ? "s" : ""}` : "", (l.practice || []).length ? `${l.practice.length} practice` : ""].filter(Boolean).join(", ")}</p>
-    ${videos.length ? `<section class="block video-block" aria-label="Video"></section>` : ""}
-    <section class="block prose">${md(l.body.replace(/^\s*# [^\n]*\n/, ""))}</section>
-    ${(l.resources || []).length ? `<section class="block"><h2>Go deeper</h2><ul class="resources">${l.resources.map((r) => {
+    ${lessonSteps(l)}
+    ${videos.length ? `<section class="block video-block" id="step-watch" aria-label="Watch"></section>` : ""}
+    <section class="block" id="step-read"><div class="step-label">Step ${videos.length ? 2 : 1} · Read</div><div class="prose">${md(l.body.replace(/^\s*# [^\n]*\n/, ""))}</div></section>
+    ${(l.practice || []).length ? `<section class="block" id="step-practice"><div class="step-label">Step ${videos.length ? 3 : 2} · Practice</div><h2>Practice</h2><div id="practice"></div></section>` : ""}
+    ${(l.resources || []).length ? `<section class="block" id="step-deeper"><h2>Go deeper</h2><ul class="resources">${l.resources.map((r) => {
       let host = ""; try { host = new URL(r.url).hostname.replace(/^www\./, ""); } catch (e) {}
       return `<li><a href="${esc(r.url)}" target="_blank" rel="noopener"><span>${esc(r.title)}</span><span class="host">${esc(host)} ↗</span></a></li>`;
     }).join("")}</ul></section>` : ""}
-    ${(l.practice || []).length ? `<section class="block"><h2>Practice</h2><div id="practice"></div></section>` : ""}
     <div class="lesson-foot">
       <button class="btn ghost done-btn ${isDone(l.id) ? "is-done" : ""}" id="done-btn"></button>
       <div class="nav">
@@ -568,6 +621,7 @@ function renderLesson(id) {
     </div></article>`;
 
   if (videos.length) videoBlock($(".video-block"), l, videos);
+  wireLessonSteps();
 
   const doneBtn = $("#done-btn");
   const paint = () => { doneBtn.innerHTML = isDone(l.id) ? `<span class="done-check">✓</span> Done` : "Mark as done"; doneBtn.classList.toggle("is-done", isDone(l.id)); };
@@ -1191,7 +1245,7 @@ function wireBackup() {
     try {
       await window.LocalBackend.restore(S.cid, JSON.parse(await file.text()));
       S.state = await api(`/courses/${S.cid}/state`);
-      S.state.passed ||= []; S.state.study ||= {}; S.state.pomodoros ||= {}; S.state.review ||= {}; S.state.goal ||= 60;
+      S.state.passed ||= []; S.state.study ||= {}; S.state.pomodoros ||= {}; S.state.review ||= {}; S.state.goal ||= 60; S.state.watched ||= {};
       renderDashboard(); say("Restored.");
     } catch (err) { say(err.message, true); }
   };
