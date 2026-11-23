@@ -65,7 +65,15 @@ function applyTheme(t) {
   $("#hl-light").disabled = dark; $("#hl-dark").disabled = !dark;
   $("#theme-btn").textContent = { system: "◐", light: "☀", dark: "☾" }[t];
   $("#theme-btn").title = `Theme: ${t} (click to change)`;
+  document.querySelectorAll("[data-theme-set]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.themeSet === t)));
 }
+// Phones hide the top bar's theme button; the same choice lives at the bottom of the ☰ menu.
+const themeChooser = () => `<div class="side-theme" role="group" aria-label="Theme"><span>Theme</span>${THEMES.map((t) =>
+  `<button data-theme-set="${t}" aria-pressed="${(store.get("theme") || "system") === t}">${t[0].toUpperCase() + t.slice(1)}</button>`).join("")}</div>`;
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-theme-set]");
+  if (b) { store.set("theme", b.dataset.themeSet); applyTheme(b.dataset.themeSet); }
+});
 $("#theme-btn").onclick = () => {
   const next = THEMES[(THEMES.indexOf(store.get("theme") || "system") + 1) % 3];
   store.set("theme", next); applyTheme(next);
@@ -414,7 +422,7 @@ function renderSidebar() {
     return `<div class="side-section ${open ? "" : "folded"}">
       <button class="side-section-head" data-sec="${esc(s.id)}" aria-expanded="${open}"><span class="chev" aria-hidden="true"></span><span class="side-title">${esc(s.title)}</span>${count}</button>
       <div class="side-links"><div>${links}${proj}</div></div></div>`;
-  }).join("");
+  }).join("") + themeChooser();
 }
 
 const collapsedKey = () => `collapsed:${S.cid}`;

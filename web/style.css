@@ -567,3 +567,18 @@ body.resizing .browser-panel { animation: none; }
   .lesson-foot #next-lesson { order: -1; flex-basis: 100%; justify-content: center; padding: 12px 18px; font-size: 15px; }
   .lesson-foot .nav .btn.ghost { background: none; border: 0; padding: 6px 2px; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; box-shadow: none; transform: none; }
 }
+.side-theme { display: none; }
+@media (max-width: 560px) {
+  .side-theme { display: flex; align-items: center; gap: 4px; margin: 20px 10px 8px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+  .side-theme span { margin-right: auto; font-weight: 600; }
+  .side-theme button { background: none; border: 1.5px solid var(--line); border-radius: 99px; padding: 5px 11px; font: 500 13px var(--font-body); color: var(--muted); cursor: pointer; }
+  .side-theme button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+}
+/* Phones: a plain top bar. Menu, course name, timer and Notes as quiet text; no progress bar, no boxes. */
+@media (max-width: 560px) {
+  #topbar-progress { display: none !important; }
+  .topbar .timer-btn { border: 0; background: none; padding: 6px 4px; font-size: 14px; color: var(--muted); box-shadow: none; }
+  .topbar .timer:not(.running) .timer-dot { display: none; }
+  .topbar #notes-btn { border: 0; background: none; padding: 6px 4px; font-size: 15px; box-shadow: none; }
+  .brand { font-size: 18px; }
+}
